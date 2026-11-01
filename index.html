@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d1411">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="问道">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<title>问道 · 考研修行录</title>
+<style>
+:root{
+  --bg:#0d1411; --bg2:#111b16; --panel:#16221c; --panel2:#1b2a22;
+  --line:#26382e; --ink:#e9f1ec; --muted:#8ba598; --dim:#5f7568;
+  --gold:#d9b36c; --jade:#63c39a; --red:#cf7b7b; --blue:#7fb2ff;
+  --shadow:0 8px 24px rgba(0,0,0,.35);
+  --r:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #17281f 0%, transparent 60%),
+    radial-gradient(800px 500px at 100% 100%, #14201a 0%, transparent 55%),
+    var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+#app{max-width:600px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+main{flex:1;padding:14px 14px calc(84px + env(safe-area-inset-bottom))}
+.view{display:none;animation:fade .18s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+h1,h2,h3{margin:0;font-weight:600}
+.muted{color:var(--muted)} .dim{color:var(--dim)}
+.small{font-size:12px} .tiny{font-size:11px}
+.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card.flat{background:var(--panel);}
+.row{display:flex;align-items:center;gap:10px}
+.row.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{
+  appearance:none;border:1px solid var(--line);background:var(--panel2);color:var(--ink);
+  padding:10px 14px;border-radius:11px;font-size:14px;font-family:inherit;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;
+  transition:.15s; user-select:none;
+}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(180deg,#2c6b50,#204d3b);border-color:#38795c;color:#eafff4}
+.btn.gold{background:linear-gradient(180deg,#5c4a26,#3d3117);border-color:#7d6433;color:#f2dfb4}
+.btn.ghost{background:transparent}
+.btn.danger{color:#f0b2b2;border-color:#4a2b2b;background:#2a1a1a}
+.btn.block{width:100%}
+.btn.sm{padding:7px 11px;font-size:13px;border-radius:9px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+input,select,textarea{
+  width:100%;background:#0f1a15;border:1px solid var(--line);color:var(--ink);
+  border-radius:10px;padding:10px 12px;font-size:15px;font-family:inherit;outline:none;
+}
+input:focus,select:focus,textarea:focus{border-color:#3c6b56}
+label.fld{display:block;margin-bottom:10px}
+label.fld>span{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg .opt{
+  padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#101b16;
+  font-size:13px;color:var(--muted);cursor:pointer;
+}
+.seg .opt.on{background:#22402f;border-color:#3f7a5d;color:#dff7ea}
+.bar{height:9px;border-radius:99px;background:#0c1410;border:1px solid var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,#3f8f6b,#7fd7a8);transition:width .4s}
+.bar.gold>i{background:linear-gradient(90deg,#8a6a2c,#e8c987)}
+.tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;border:1px solid var(--line);color:var(--muted)}
+.tag.sub-数学{color:#a8c8ff;border-color:#2f4a72;background:#152234}
+.tag.sub-英语{color:#9fe0c0;border-color:#2b5a45;background:#12241c}
+.tag.sub-政治{color:#f0b3b3;border-color:#6b3333;background:#2a1515}
+.tag.sub-专业课{color:#f0d9a6;border-color:#5e4a24;background:#241d10}
+/* tabbar */
+nav#tabbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;
+  display:flex;max-width:600px;margin:0 auto;
+  background:rgba(16,26,21,.92);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+nav#tabbar button{
+  flex:1;background:none;border:0;color:var(--dim);font-family:inherit;font-size:11px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;cursor:pointer;
+}
+nav#tabbar button .ico{font-size:19px;line-height:1;filter:grayscale(.6);opacity:.75}
+nav#tabbar button.on{color:var(--gold)}
+nav#tabbar button.on .ico{filter:none;opacity:1}
+/* realms */
+.realm{padding:11px 0;border-bottom:1px solid #1c2a22}
+.realm:last-child{border-bottom:0}
+.dots{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.layers{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px;margin-top:6px}
+.layers input{padding:6px 9px;font-size:12.5px;text-align:center}
+.dot{width:100%;max-width:26px;height:5px;border-radius:99px;background:#1e2e26;flex:1}
+.dot.on{background:linear-gradient(90deg,#4c9e77,#7fd7a8)}
+.realm.cur .rname{color:var(--gold)}
+/* tasks */
+.task{
+  display:flex;gap:11px;align-items:flex-start;padding:11px;border:1px solid var(--line);
+  background:var(--panel);border-radius:12px;margin-bottom:9px;
+}
+.task.done{opacity:.5}
+.task .box{
+  width:23px;height:23px;flex:0 0 23px;border-radius:7px;border:1.5px solid #3a5446;
+  display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent;
+  margin-top:1px;cursor:pointer;
+}
+.task.done .box{background:#2e6b4f;border-color:#468c68;color:#eafff4}
+.task .tt{font-size:14px}
+.task.done .tt{text-decoration:line-through}
+/* sheet / modal */
+.sheet-wrap{position:fixed;inset:0;z-index:60;display:none}
+.sheet-wrap.on{display:block}
+.sheet-mask{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;max-width:600px;margin:0 auto;
+  background:var(--bg2);border-top:1px solid var(--line);
+  border-radius:20px 20px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));
+  max-height:92vh;overflow:auto;animation:up .22s ease;
+}
+@keyframes up{from{transform:translateY(30px)}to{transform:none}}
+.sheet h3{font-size:16px;margin-bottom:12px}
+/* pomodoro */
+#pomo{position:fixed;inset:0;z-index:70;display:none;background:#070d0a}
+#pomo.on{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.ring{position:relative;width:min(72vw,290px);height:min(72vw,290px)}
+.ring svg{transform:rotate(-90deg);width:100%;height:100%}
+.ring .num{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px
+}
+.ring .num b{font-size:44px;font-weight:300;letter-spacing:1px;font-variant-numeric:tabular-nums}
+/* toast */
+#toast{
+  position:fixed;left:50%;bottom:96px;transform:translate(-50%,10px);z-index:90;
+  background:#1d2e25;border:1px solid #3a5c49;color:#e9f6ee;padding:9px 15px;border-radius:11px;
+  font-size:13px;opacity:0;pointer-events:none;transition:.22s;white-space:nowrap;max-width:88vw;
+  overflow:hidden;text-overflow:ellipsis;
+}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.banner{
+  border:1px solid #5b4a24;background:#241d10;color:#e6cd97;border-radius:12px;
+  padding:10px 12px;font-size:13px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start
+}
+.pop{animation:pop .35s ease}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  border:1px dashed #35503f;background:#101a15;color:#a9c3b4;border-radius:99px;
+  padding:6px 11px;font-size:12px;cursor:pointer
+}
+.fab{
+  position:fixed;right:18px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:40;
+  width:54px;height:54px;border-radius:50%;border:1px solid #3f7a5d;
+  background:linear-gradient(180deg,#2e7456,#1d4c39);color:#eafff4;font-size:26px;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);cursor:pointer
+}
+.fab:active{transform:scale(.95)}
+hr{border:0;border-top:1px solid var(--line);margin:12px 0}
+a{color:var(--jade)}
+</style>
+</head>
+<body>
+<div id="app">
+  <main id="main"></main>
+  <nav id="tabbar">
+    <button data-tab="home" class="on"><span class="ico">☯</span>修炼</button>
+    <button data-tab="tasks"><span class="ico">📜</span>任务</button>
+    <button data-tab="realms"><span class="ico">⛰</span>境界</button>
+    <button data-tab="settings"><span class="ico">⚙</span>设置</button>
+  </nav>
+</div>
+
+<div class="sheet-wrap" id="sheetWrap">
+  <div class="sheet-mask" data-close="1"></div>
+  <div class="sheet" id="sheetBody"></div>
+</div>
+
+<div id="pomo"></div>
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   问道 · 考研修行录  —— 单文件 / 纯前端 / localStorage
+   ============================================================ */
+var KEY = 'wenda_kaoyan_v1';
+var SUBJECTS = ['数学','英语','政治','专业课'];
+var DIFFS = [
+  {k:'easy',   name:'简单', mul:1},
+  {k:'normal', name:'普通', mul:1.5},
+  {k:'hard',   name:'困难', mul:2.5}
+];
+var state = null;
+var ui = { tab:'home', editRealms:false, sheet:null, pomo:null };
+
+/* ---------- utils ---------- */
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+function todayStr(d){
+  d = d || new Date();
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+}
+function shiftDay(s, n){
+  var p = s.split('-'), d = new Date(+p[0], +p[1]-1, +p[2]);
+  d.setDate(d.getDate()+n);
+  return todayStr(d);
+}
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function arr(n, v){ var a=[]; for(var i=0;i<n;i++) a.push(typeof v==='function'?v(i):v); return a; }
+function haptic(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms||12); }catch(e){} }
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(function(){ t.classList.remove('on'); }, 1900);
+}
+
+/* ---------- state ---------- */
+function R(name, layers){ return { id:uid(), name:name, layers:layers, brokeAt:0 }; }
+
+function freshState(){
+  return {
+    v: 1,
+    xp: 0,
+    realm: 0,
+    layer: 0,
+    realms: [
+      R('炼气', arr(9, function(i){ return ['一层','二层','三层','四层','五层','六层','七层','八层','九层'][i]; })),
+      R('筑基', ['初期','中期','后期','圆满']),
+      R('金丹', ['初期','中期','后期','圆满']),
+      R('元婴', ['初期','中期','后期','圆满']),
+      R('化神', ['初期','中期','后期','圆满']),
+      R('炼虚', ['初期','中期','后期','圆满']),
+      R('合体', ['初期','中期','后期','圆满']),
+      R('大乘', ['初期','中期','后期','圆满']),
+      R('渡劫', ['一重','二重','三重']),
+      R('飞升', ['登仙'])
+    ],
+    tasks: [],
+    tpl: [],
+    log: [],
+    streak: { n: 0, last: '' },
+    pills: 0,
+    exam: { name:'考研初试', date:'' },
+    cfg: { base:60, growth:0.12, per:10, easy:1, normal:1.5, hard:2.5, backupDays:7, pillXp:40 },
+    stats: {},
+    meta: { createdAt: Date.now(), lastBackup: '', lastOpen: '' }
+  };
+}
+
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(!raw){ state = freshState(); save(); return; }
+    var s = JSON.parse(raw);
+    state = migrate(s);
+  }catch(e){
+    console.error(e);
+    state = freshState();
+  }
+}
+
+function migrate(s){
+  var d = freshState();
+  // 浅合并，保证新增字段有默认值
+  for(var k in d){ if(!(k in s)) s[k] = d[k]; }
+  for(var k2 in d.cfg){ if(typeof s.cfg[k2] === 'undefined') s.cfg[k2] = d.cfg[k2]; }
+  if(!Array.isArray(s.realms) || !s.realms.length) s.realms = d.realms;
+  s.realms.forEach(function(r){
+    if(!r.id) r.id = uid();
+    if(!Array.isArray(r.layers) || !r.layers.length) r.layers = ['初期'];
+  });
+  if(s.realm >= s.realms.length) s.realm = s.realms.length-1;
+  if(s.layer >= s.realms[s.realm].layers.length) s.layer = s.realms[s.realm].layers.length-1;
+  return s;
+}
+
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }
+  catch(e){ toast('存档写入失败：' + e.message); }
+}
+
+/* ---------- 等级 / 经验 ---------- */
+function realms(){ return state.realms; }
+function curRealm(){ return state.realms[state.realm]; }
+function curLayerName(){ var r = curRealm(); return r ? (r.layers[state.layer] || '') : ''; }
+function globalIndex(){
+  var n = 0;
+  for(var i=0;i<state.realm;i++) n += state.realms[i].layers.length;
+  return n + state.layer;
+}
+function needXp(){
+  return Math.max(1, Math.round(state.cfg.base * (1 + state.cfg.growth * globalIndex())));
+}
+function xpFor(minutes, diffKey){
+  var mul = state.cfg[diffKey] != null ? state.cfg[diffKey] : 1.5;
+  return Math.max(1, Math.round(minutes / state.cfg.per * mul));
+}
+function diffName(k){
+  for(var i=0;i<DIFFS.length;i++) if(DIFFS[i].k===k) return DIFFS[i].name;
+  return '普通';
+}
+function streakMul(){
+  var n = state.streak.n || 0;
+  return Math.min(1 + 0.05 * Math.max(0, n-1), 1.5);
+}
+function isLastLayer(){ var r = curRealm(); return r && state.layer >= r.layers.length-1; }
+function canBreak(){
+  return state.xp >= needXp() && isLastLayer() && state.realm < state.realms.length-1;
+}
+function isFinal(){ return state.realm >= state.realms.length-1; }
+
+/* 小层自动推进，大境界末尾停住等手动突破 */
+function settle(){
+  var guard = 0;
+  while(guard++ < 500){
+    var need = needXp();
+    if(state.xp < need) break;
+    var r = curRealm();
+    if(!r || state.layer >= r.layers.length-1) break; // 到大境界末尾，等突破
+    state.layer++;
+    state.xp -= need;
+    state.log.push({ t:Date.now(), type:'layer', name:r.name+'·'+r.layers[state.layer] });
+  }
+}
+
+function gainXp(amount, reason){
+  if(amount <= 0) return 0;
+  state.xp += amount;
+  settle();
+  save();
+  return amount;
+}
+
+function doBreakthrough(){
+  if(!canBreak()) return;
+  var need = needXp();
+  state.xp -= need;
+  var from = curRealm().name;
+  state.realm++;
+  state.layer = 0;
+  var r = curRealm();
+  r.brokeAt = Date.now();
+  state.log.push({ t:Date.now(), type:'realm', name:r.name, from:from });
+  save();
+  haptic([18,60,18]);
+  beep(660, 0.18); setTimeout(function(){ beep(880, 0.24); }, 180);
+  toast('突破成功 · 已入' + r.name);
+  render();
+}
+
+/* ---------- 连击 / 统计 ---------- */
+function touchStreak(){
+  var t = todayStr();
+  if(state.streak.last === t) return;
+  state.streak.n = (state.streak.last === shiftDay(t,-1)) ? (state.streak.n||0)+1 : 1;
+  state.streak.last = t;
+  if(state.streak.n > 0 && state.streak.n % 7 === 0){
+    state.pills = (state.pills||0) + 1;
+    toast('连修七日 · 得丹药一枚');
+  }
+}
+function takePill(){
+  if(!state.pills) return;
+  state.pills--;
+  gainXp(state.cfg.pillXp, 'pill');
+  haptic(); beep(520,0.15);
+  toast('服丹 +' + state.cfg.pillXp + ' 修为');
+  render();
+}
+function statOf(d){
+  var s = state.stats[d];
+  if(!s){ s = state.stats[d] = { min:0, xp:0, n:0 }; }
+  return s;
+}
+
+/* ---------- 任务 ---------- */
+function todayTasks(){
+  var t = todayStr();
+  return state.tasks.filter(function(x){ return x.date === t; });
+}
+function carryOver(){
+  var t = todayStr(), moved = 0;
+  state.tasks.forEach(function(x){
+    if(x.status === 'todo' && x.date < t){
+      x.date = t; x.carried = true; x.carryTimes = (x.carryTimes||0) + 1; moved++;
+    }
+  });
+  if(moved) save();
+  return moved;
+}
+function addTask(o){
+  var t = todayStr();
+  var tk = {
+    id: uid(), date: o.date || t,
+    subject: o.subject || '数学',
+    title: o.title || '',
+    minutes: Math.max(1, Math.round(o.minutes || 25)),
+    diff: o.diff || 'normal',
+    status: 'todo', doneAt: 0, doneMinutes: 0, xp: 0,
+    carried: false, carryTimes: 0
+  };
+  state.tasks.push(tk);
+  save();
+  return tk;
+}
+function completeTask(id, actualMinutes){
+  var tk = null;
+  for(var i=0;i<state.tasks.length;i++) if(state.tasks[i].id === id) tk = state.tasks[i];
+  if(!tk || tk.status === 'done') return null;
+  touchStreak();
+  var minutes = actualMinutes || tk.minutes;
+  var base = xpFor(minutes, tk.diff);
+  var got = Math.max(1, Math.round(base * streakMul()));
+  tk.status = 'done'; tk.doneAt = Date.now();
+  tk.doneMinutes = minutes; tk.xp = got;
+  state.meta.lastAct = todayStr();
+  var st = statOf(tk.date);
+  st.min += minutes; st.xp += got; st.n += 1;
+  gainXp(got, 'task');
+  haptic();
+  save();
+  return got;
+}
+function undoTask(id){
+  var tk = null;
+  for(var i=0;i<state.tasks.length;i++) if(state.tasks[i].id === id) tk = state.tasks[i];
+  if(!tk || tk.status !== 'done') return;
+  var st = statOf(tk.date);
+  st.min = Math.max(0, st.min - tk.doneMinutes);
+  st.xp  = Math.max(0, st.xp - tk.xp);
+  st.n   = Math.max(0, st.n - 1);
+  state.xp = Math.max(0, state.xp - tk.xp);
+  tk.status = 'todo'; tk.xp = 0; tk.doneAt = 0;
+  save(); render();
+  toast('已撤销');
+}
+function delTask(id){
+  state.tasks = state.tasks.filter(function(x){ return x.id !== id; });
+  save(); render();
+}
+
+/* ---------- 番茄钟 ---------- */
+function beep(freq, dur){
+  try{
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    var ac = beep._ac || (beep._ac = new AC());
+    var o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine'; o.frequency.value = freq || 660;
+    g.gain.setValueAtTime(0.0001, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.18, ac.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + (dur||0.2));
+    o.connect(g); g.connect(ac.destination);
+    o.start(); o.stop(ac.currentTime + (dur||0.2) + 0.02);
+  }catch(e){}
+}
+
+function openPomo(){
+  ui.pomo = {
+    subject: '数学', diff: 'normal', total: 25*60, left: 25*60,
+    running: false, startedAt: 0
+  };
+  renderPomo(); document.getElementById('pomo').classList.add('on');
+}
+function closePomo(){
+  ui.pomo = null;
+  unlockScreen();
+  document.getElementById('pomo').classList.remove('on');
+  document.getElementById('pomo').innerHTML = '';
+}
+function pomoTick(){
+  var p = ui.pomo; if(!p || !p.running) return;
+  var left = Math.max(0, Math.ceil((p.endAt - Date.now()) / 1000));
+  p.left = left;
+  if(left <= 0){
+    p.running = false;
+    clearInterval(p.timer);
+    unlockScreen();
+    finishPomo();
+    return;
+  }
+  var el = document.querySelector('#pomo .num b');
+  if(el) el.textContent = fmtSec(p.left);
+  var arc = document.querySelector('#pomo .ring circle.prog');
+  if(arc){
+    var C = 2*Math.PI*84;
+    arc.style.strokeDashoffset = C * (1 - p.left/p.total);
+  }
+}
+function fmtSec(s){
+  var m = Math.floor(s/60), r = s%60;
+  return pad(m)+':'+pad(r);
+}
+var wakeLock = null;
+function lockScreen(){
+  try{
+    if(wakeLock || !('wakeLock' in navigator)) return;
+    navigator.wakeLock.request('screen').then(function(l){ wakeLock = l; }).catch(function(){});
+  }catch(e){}
+}
+function unlockScreen(){
+  try{ if(wakeLock){ wakeLock.release(); } }catch(e){}
+  wakeLock = null;
+}
+function pomoStart(){
+  var p = ui.pomo; if(!p || p.running) return;
+  p.running = true;
+  p.endAt = Date.now() + p.left * 1000;
+  p.timer = setInterval(pomoTick, 250);
+  lockScreen();
+  haptic(); beep(440,0.1);
+  renderPomo();
+}
+function pomoPause(){
+  var p = ui.pomo; if(!p || !p.running) return;
+  p.left = Math.max(0, Math.ceil((p.endAt - Date.now()) / 1000));
+  p.running = false; clearInterval(p.timer);
+  unlockScreen();
+  renderPomo();
+}
+function pomoReset(sec){
+  var p = ui.pomo; if(!p) return;
+  p.running = false; clearInterval(p.timer);
+  unlockScreen();
+  p.total = sec; p.left = sec;
+  renderPomo();
+}
+function finishPomo(){
+  var p = ui.pomo;
+  var doneMin = Math.round(p.total / 60);
+  var tk = addTask({ subject:p.subject, title:'闭关 · '+p.subject, minutes:doneMin, diff:p.diff });
+  var got = completeTask(tk.id, doneMin);
+  haptic([30,50,30]); beep(880,0.2);
+  closePomo();
+  render();
+  toast('闭关结束 · 修为 +' + (got||0));
+}
+function abandonPomo(){
+  var p = ui.pomo;
+  var used = Math.round((p.total - p.left)/60);
+  if(used >= 5){
+    var tk = addTask({ subject:p.subject, title:'闭关 · '+p.subject+'（提前收功）', minutes:used, diff:p.diff });
+    var got = completeTask(tk.id, used);
+    closePomo(); render();
+    toast('收功 · 实修 ' + used + ' 分钟 +' + (got||0));
+  }else{
+    closePomo(); render();
+    toast('已放弃');
+  }
+}
+function renderPomo(){
+  var p = ui.pomo, host = document.getElementById('pomo');
+  if(!p){ host.innerHTML=''; return; }
+  var C = 2*Math.PI*84;
+  var pct = p.total ? (1 - p.left/p.total) : 0;
+  host.innerHTML =
+    '<div class="small dim">' + esc(state.exam.name || '考研') + ' · 闭关修炼</div>' +
+    '<div class="ring">' +
+      '<svg viewBox="0 0 200 200">' +
+        '<circle cx="100" cy="100" r="84" fill="none" stroke="#1b2a22" stroke-width="10"/>' +
+        '<circle class="prog" cx="100" cy="100" r="84" fill="none" stroke="#63c39a" stroke-width="10" ' +
+          'stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" ' +
+          'stroke-dashoffset="' + (C*(1-pct)).toFixed(1) + '"/>' +
+      '</svg>' +
+      '<div class="num"><b>' + fmtSec(p.left) + '</b>' +
+        '<span class="small muted">' + esc(p.subject) + ' · ' + diffName(p.diff) +
+        ' · 预计 +' + xpFor(p.total/60, p.diff) + '</span></div>' +
+    '</div>' +
+    '<div class="seg" style="justify-content:center">' +
+      [25,45,60,90].map(function(m){
+        return '<div class="opt' + (p.total===m*60?' on':'') + '" data-psec="' + (m*60) + '">' + m + '分</div>';
+      }).join('') +
+    '</div>' +
+    '<div class="seg" style="justify-content:center">' +
+      SUBJECTS.map(function(s){
+        return '<div class="opt' + (p.subject===s?' on':'') + '" data-psub="' + esc(s) + '">' + esc(s) + '</div>';
+      }).join('') +
+    '</div>' +
+    '<div class="row" style="gap:10px;margin-top:6px">' +
+      (p.running
+        ? '<button class="btn primary" data-pact="pause">暂停</button>'
+        : '<button class="btn primary" data-pact="start">' + (p.left===p.total?'开始闭关':'继续') + '</button>') +
+      '<button class="btn ghost" data-pact="abandon">收功</button>' +
+      '<button class="btn ghost sm" data-pact="close">关闭</button>' +
+    '</div>';
+}
+
+/* ---------- 渲染 ---------- */
+function daysLeft(){
+  if(!state.exam.date) return null;
+  var p = state.exam.date.split('-');
+  if(p.length < 3) return null;
+  var target = new Date(+p[0], +p[1]-1, +p[2]);
+  var now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((target - now) / 86400000);
+}
+function daysSince(ts){
+  if(!ts) return null;
+  var d = new Date(ts); d.setHours(0,0,0,0);
+  var now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((now - d) / 86400000);
+}
+
+function viewHome(){
+  var r = curRealm(), need = needXp(), pct = Math.min(100, state.xp/need*100);
+  var ts = todayTasks();
+  var done = ts.filter(function(x){ return x.status==='done'; }).length;
+  var minToday = ts.reduce(function(a,x){ return a + (x.status==='done'?x.doneMinutes:0); }, 0);
+  var dl = daysLeft();
+  var lastAct = state.meta.lastAct || state.streak.last;
+  var gap = lastAct ? daysSince(lastAct) : null;
+
+  var html = '';
+  if(gap !== null && gap >= 3){
+    html += '<div class="banner">⛩ 已 ' + gap + ' 日未入定。修为不会倒退，回来便好。</div>';
+  }
+  if(state.meta.lastBackup){
+    var bd = daysSince(state.meta.lastBackup);
+    if(bd !== null && bd >= state.cfg.backupDays){
+      html += '<div class="banner">存档提醒｜距上次导出 ' + bd + ' 天。手机浏览器清缓存会丢档，建议去设置导出一次。</div>';
+    }
+  }else{
+    html += '<div class="banner">存档提醒｜还没导出过存档。数据只存在这台手机的浏览器里，建议先导出一份备份。</div>';
+  }
+
+  html +=
+    '<div class="card">' +
+      '<div class="row between">' +
+        '<div><div class="small muted">当前境界</div>' +
+          '<h2 style="font-size:22px;color:var(--gold)">' + esc(r.name) + ' · ' + esc(curLayerName()) + '</h2></div>' +
+        '<div style="text-align:right">' +
+          (dl === null
+            ? '<button class="btn sm ghost" data-act="goSettings">设置考期</button>'
+            : '<div class="small muted">' + (dl > 0 ? '距考试' : (dl === 0 ? '考试日' : '已过')) + '</div>' +
+              '<div style="font-size:22px;color:' + (dl <= 14 ? 'var(--red)' : 'var(--jade)') + '">' +
+                (dl > 0 ? dl + ' 天' : (dl === 0 ? '今日' : (-dl) + ' 天')) + '</div>') +
+        '</div>' +
+      '</div>' +
+      '<div class="row between small" style="margin:14px 0 6px">' +
+        '<span class="muted">修为</span><span>' + state.xp + ' / ' + need + '</span>' +
+      '</div>' +
+      '<div class="bar"><i style="width:' + pct.toFixed(1) + '%"></i></div>' +
+      (canBreak()
+        ? '<button class="btn gold block" style="margin-top:12px" data-act="break">⚡ 冲击 ' +
+            esc(state.realms[state.realm+1].name) + '</button>'
+        : (isLastLayer() && !isFinal()
+            ? '<div class="small dim" style="margin-top:10px">修为已满，可冲击「' + esc(state.realms[state.realm+1].name) + '」</div>'
+            : '')) +
+      (isFinal() && state.xp>=need ? '<div class="small" style="margin-top:10px;color:var(--gold)">已至' + esc(r.name) + '，无量寿福。</div>' : '') +
+    '</div>';
+
+  html +=
+    '<div class="card flat">' +
+      '<div class="row between">' +
+        '<div class="small muted">今日</div>' +
+        '<div class="small">' + done + '/' + ts.length + ' 项 · ' + minToday + ' 分钟</div>' +
+      '</div>' +
+      (ts.length
+        ? '<div style="margin-top:10px">' + ts.slice(0,4).map(taskRow).join('') + '</div>'
+        : '<div class="small dim" style="margin-top:8px">今日尚未布置功课。</div>') +
+    '</div>';
+
+  html +=
+    '<div class="row" style="gap:10px">' +
+      '<button class="btn primary grow" data-act="pomo">🧘 开始闭关</button>' +
+      '<button class="btn grow" data-act="goTasks">📜 布置功课</button>' +
+    '</div>';
+
+  html +=
+    '<div class="card flat" style="margin-top:12px">' +
+      '<div class="row between">' +
+        '<div><div class="small muted">连续修习</div><div style="font-size:19px;color:var(--gold)">' +
+          (state.streak.n||0) + ' 天</div></div>' +
+        '<div style="text-align:right"><div class="small muted">丹药</div><div style="font-size:19px">' +
+          (state.pills||0) + ' 枚</div></div>' +
+        '<div style="text-align:right"><div class="small muted">加成</div><div style="font-size:19px;color:var(--jade)">×' +
+          streakMul().toFixed(2) + '</div></div>' +
+      '</div>' +
+      (state.pills ? '<button class="btn sm ghost" style="margin-top:10px" data-act="pill">服用丹药（+' + state.cfg.pillXp + ' 修为）</button>' : '') +
+    '</div>';
+
+  return html;
+}
+
+function taskRow(x){
+  return '<div class="task ' + (x.status==='done'?'done':'') + '" data-task="' + x.id + '">' +
+    '<div class="box" data-act="toggle" data-id="' + x.id + '">✓</div>' +
+    '<div class="grow">' +
+      '<div class="tt ell">' + esc(x.title) + '</div>' +
+      '<div class="row small dim" style="gap:6px;margin-top:3px;flex-wrap:wrap">' +
+        '<span class="tag sub-' + esc(x.subject) + '">' + esc(x.subject) + '</span>' +
+        '<span>' + x.minutes + '分 · ' + diffName(x.diff) + ' · +' + (x.xp || xpFor(x.minutes, x.diff)) + '</span>' +
+        (x.carried ? '<span style="color:var(--red)">拖延' + x.carryTimes + '次</span>' : '') +
+      '</div>' +
+    '</div>' +
+    '<button class="btn sm ghost" data-act="del" data-id="' + x.id + '" style="padding:4px 8px">✕</button>' +
+  '</div>';
+}
+
+function viewTasks(){
+  var ts = todayTasks();
+  var todo = ts.filter(function(x){ return x.status!=='done'; });
+  var done = ts.filter(function(x){ return x.status==='done'; });
+  var html = '';
+  html += '<div class="row between" style="margin:2px 0 12px">' +
+    '<h2 style="font-size:17px">今日功课</h2>' +
+    '<span class="small dim">' + todayStr().replace(/-/g,'/') + '</span></div>';
+
+  html += '<div class="row" style="gap:8px;margin-bottom:12px">' +
+    '<button class="btn sm grow" data-act="add">＋ 新功课</button>' +
+    (yesterdayDoneTasks().length ? '<button class="btn sm grow ghost" data-act="copyYest">复制昨日</button>' : '') +
+  '</div>';
+
+  if(state.tpl.length){
+    html += '<div class="small muted" style="margin-bottom:6px">常用功课</div><div class="chips" style="margin-bottom:14px">' +
+      state.tpl.map(function(t, i){
+        return '<span class="chip" data-act="useTpl" data-i="' + i + '">' + esc(t.subject) + ' · ' + esc(t.title) + '</span>';
+      }).join('') + '</div>';
+  }
+
+  if(!ts.length){
+    html += '<div class="card" style="text-align:center;padding:26px 14px">' +
+      '<div class="muted">今日尚无功课</div>' +
+      '<div class="small dim" style="margin-top:6px">点右下角 ＋ 或「新功课」布置今日修行</div></div>';
+  }
+
+  if(todo.length){
+    html += '<div class="small muted" style="margin-bottom:6px">未完成 · ' + todo.length + '</div>';
+    html += todo.map(taskRow).join('');
+  }
+  if(done.length){
+    html += '<div class="small muted" style="margin:14px 0 6px">已完成 · ' + done.length + '</div>';
+    html += done.map(taskRow).join('');
+  }
+  return html;
+}
+
+function yesterdayDoneTasks(){
+  var y = shiftDay(todayStr(), -1);
+  return state.tasks.filter(function(x){ return x.date===y; });
+}
+
+function viewRealms(){
+  var html = '';
+  html += '<div class="row between" style="margin:2px 0 12px">' +
+    '<h2 style="font-size:17px">境界</h2>' +
+    '<button class="btn sm ghost" data-act="editRealms">' + (ui.editRealms?'完成':'编辑') + '</button></div>';
+
+  if(ui.editRealms){
+    html += '<div class="banner">改名不会丢档。可以改大境界名、改小层名、增删小层，也可以增删大境界。</div>';
+  }
+
+  html += '<div class="card">';
+  state.realms.forEach(function(r, ri){
+    var isCur = ri === state.realm;
+    var reach = ri < state.realm;
+    html += '<div class="realm' + (isCur?' cur':'') + '">';
+    html += '<div class="row between">';
+    if(ui.editRealms){
+      html += '<input value="' + esc(r.name) + '" data-rname="' + ri + '" style="max-width:150px;padding:6px 9px">';
+    }else{
+      html += '<div class="rname" style="font-weight:600' + (reach?' opacity:.45':'') + '">' + esc(r.name) +
+        (reach?' <span class="tiny dim">已成</span>':'') + '</div>';
+    }
+    html += '<div class="tiny dim">' + r.layers.length + ' 层</div></div>';
+
+    if(ui.editRealms){
+      html += '<div class="layers">' + r.layers.map(function(L, li){
+        return '<input value="' + esc(L) + '" data-rlayer="' + ri + '_' + li + '">';
+      }).join('') + '</div>';
+      html += '<div class="row" style="gap:6px;margin-top:7px">' +
+        '<button class="btn sm ghost" data-act="addLayer" data-ri="' + ri + '">＋层</button>' +
+        (r.layers.length>1 ? '<button class="btn sm ghost" data-act="delLayer" data-ri="' + ri + '">－层</button>' : '') +
+        (state.realms.length>1 ? '<button class="btn sm ghost" data-act="delRealm" data-ri="' + ri + '">删除境界</button>' : '') +
+      '</div>';
+    }else{
+      html += '<div class="dots">' + r.layers.map(function(L, li){
+        var on = reach || (isCur && li <= state.layer);
+        return '<div class="dot' + (on?' on':'') + '" title="' + esc(L) + '"></div>';
+      }).join('') + '</div>';
+      if(isCur){
+        html += '<div class="tiny" style="margin-top:7px;color:var(--gold)">' + esc(curLayerName()) +
+          ' · ' + state.xp + '/' + needXp() + '</div>';
+      }
+    }
+    html += '</div>';
+  });
+  if(ui.editRealms){
+    html += '<button class="btn sm ghost block" style="margin-top:10px" data-act="addRealm">＋ 新增大境界</button>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function viewSettings(){
+  var dl = daysLeft();
+  var html = '';
+  html += '<h2 style="font-size:17px;margin:2px 0 12px">设置</h2>';
+
+  html += '<div class="card"><div class="small muted" style="margin-bottom:10px">考期</div>' +
+    '<label class="fld"><span>考试名称</span><input id="examName" value="' + esc(state.exam.name) + '" placeholder="考研初试"></label>' +
+    '<label class="fld"><span>考试日期</span><input id="examDate" type="date" value="' + esc(state.exam.date) + '"></label>' +
+    '<div class="small dim">' + (dl===null ? '填了日期，修炼页才会显示倒计时' : (dl>0 ? '距考试 ' + dl + ' 天' : '考期已过 ' + (-dl) + ' 天')) + '</div>' +
+  '</div>';
+
+  html += '<div class="card"><div class="small muted" style="margin-bottom:10px">修行参数</div>' +
+    '<div class="row" style="gap:10px">' +
+      numFld('baseXp', '每层基础修为', state.cfg.base) +
+      numFld('growth', '每层增幅', state.cfg.growth) +
+      numFld('per', '每分钟折算', state.cfg.per) +
+    '</div>' +
+    '<div class="row" style="gap:10px">' +
+      numFld('mulEasy', '简单系数', state.cfg.easy) +
+      numFld('mulNormal', '普通系数', state.cfg.normal) +
+      numFld('mulHard', '困难系数', state.cfg.hard) +
+    '</div>' +
+    '<div class="small dim" style="margin-top:8px">修为 = 分钟 ÷ 每分钟折算 × 难度系数，再乘连击加成。改完即时生效。</div>' +
+  '</div>';
+
+  html += '<div class="card"><div class="small muted" style="margin-bottom:10px">存档</div>' +
+    '<div class="row" style="gap:8px">' +
+      '<button class="btn sm grow" data-act="export">导出 JSON</button>' +
+      '<button class="btn sm grow ghost" data-act="import">导入 JSON</button>' +
+    '</div>' +
+    '<div class="small dim" style="margin-top:8px">' +
+      (state.meta.lastBackup ? '上次导出：' + state.meta.lastBackup : '尚未导出') +
+    '</div>' +
+    '<hr>' +
+    '<button class="btn sm danger block" data-act="reset">清空全部存档</button>' +
+  '</div>';
+
+  var totalMin = 0, totalN = 0;
+  for(var k in state.stats){ totalMin += state.stats[k].min; totalN += state.stats[k].n; }
+  html += '<div class="card flat"><div class="small muted" style="margin-bottom:8px">累计</div>' +
+    '<div class="row between small"><span class="dim">修行时长</span><span>' + Math.round(totalMin/60) + ' 小时 ' + (totalMin%60) + ' 分</span></div>' +
+    '<div class="row between small" style="margin-top:5px"><span class="dim">完成功课</span><span>' + totalN + ' 项</span></div>' +
+    '<div class="row between small" style="margin-top:5px"><span class="dim">当前境界</span><span>' + esc(curRealm().name) + ' · ' + esc(curLayerName()) + '</span></div>' +
+  '</div>';
+  return html;
+}
+
+function numFld(id, label, val){
+  return '<label class="fld grow" style="margin-bottom:0"><span>' + label + '</span>' +
+    '<input id="' + id + '" type="number" step="0.01" value="' + val + '"></label>';
+}
+
+var VIEWS = { home:viewHome, tasks:viewTasks, realms:viewRealms, settings:viewSettings };
+
+function render(){
+  var host = document.getElementById('main');
+  host.innerHTML = '<div class="view on">' + VIEWS[ui.tab]() + '</div>';
+  document.querySelectorAll('#tabbar button').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-tab') === ui.tab);
+  });
+  // FAB 只在任务页
+  var fab = document.querySelector('.fab');
+  if(ui.tab === 'tasks'){
+    if(!fab){
+      fab = document.createElement('div');
+      fab.className = 'fab'; fab.textContent = '+';
+      fab.setAttribute('data-act','add');
+      document.body.appendChild(fab);
+    }
+  }else if(fab){ fab.remove(); }
+}
+
+/* ---------- 交互 ---------- */
+function openSheet(html){
+  document.getElementById('sheetBody').innerHTML = html;
+  document.getElementById('sheetWrap').classList.add('on');
+}
+function closeSheet(){
+  document.getElementById('sheetWrap').classList.remove('on');
+  ui.sheet = null;
+}
+
+function sheetAddTask(pre){
+  pre = pre || {};
+  var st = { subject: pre.subject || '数学', minutes: pre.minutes || 45, diff: pre.diff || 'normal', save: !!pre.save };
+  var html = '<h3>布置功课</h3>' +
+    '<label class="fld"><span>科目</span><div class="seg" id="segSub">' +
+      SUBJECTS.map(function(s){ return '<div class="opt' + (st.subject===s?' on':'') + '" data-s="' + esc(s) + '">' + esc(s) + '</div>'; }).join('') +
+    '</div></label>' +
+    '<label class="fld"><span>内容</span><input id="taskTitle" placeholder="例：高数第 5 章 极限 20 题" value="' + esc(pre.title||'') + '"></label>' +
+    '<label class="fld"><span>预计时长（分钟）</span>' +
+      '<div class="chips" id="segMin" style="margin-bottom:8px">' +
+        [15,25,45,60,90,120].map(function(m){
+          return '<span class="chip" style="border-style:solid;' + (st.minutes===m?'border-color:#3f7a5d;color:#dff7ea':'') + '" data-m="' + m + '">' + m + '分</span>';
+        }).join('') +
+      '</div>' +
+      '<input id="taskMin" type="number" value="' + st.minutes + '">' +
+    '</label>' +
+    '<label class="fld"><span>难度</span><div class="seg" id="segDiff">' +
+      DIFFS.map(function(d){ return '<div class="opt' + (st.diff===d.k?' on':'') + '" data-d="' + d.k + '">' + d.name + '</div>'; }).join('') +
+    '</div></label>' +
+    '<div class="small dim" id="xpPreview" style="margin-bottom:12px"></div>' +
+    '<label class="row small" style="gap:8px;margin-bottom:12px"><input type="checkbox" id="saveTpl" ' +
+      (st.save?'checked':'') + ' style="width:auto"> 存入常用功课</label>' +
+    '<div class="row" style="gap:8px">' +
+      '<button class="btn ghost grow" data-act="closeSheet">取消</button>' +
+      '<button class="btn primary grow" data-act="saveTask">布置</button>' +
+    '</div>';
+  ui.sheet = st;
+  openSheet(html);
+  previewXp();
+  ['taskTitle','taskMin'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', function(){
+      if(id==='taskMin' && el.value) ui.sheet.minutes = +el.value;
+      previewXp();
+    });
+  });
+}
+function previewXp(){
+  var s = ui.sheet; if(!s) return;
+  var el = document.getElementById('xpPreview');
+  if(!el) return;
+  var base = xpFor(s.minutes, s.diff);
+  el.innerHTML = '预计得修为 <b style="color:var(--jade)">+' + base + '</b>' +
+    (streakMul()>1 ? ' × 连击加成 ' + streakMul().toFixed(2) + ' ≈ +' + Math.round(base*streakMul()) : '');
+}
+
+function onMainClick(e){
+  if(!e.target || !e.target.closest) return;
+  var t = e.target.closest('[data-act]');
+  if(!t) return;
+  var act = t.getAttribute('data-act');
+  if(!act) return;
+  haptic(8);
+  switch(act){
+    case 'break': doBreakthrough(); break;
+    case 'pill': takePill(); break;
+    case 'pomo': openPomo(); break;
+    case 'goTasks': ui.tab = 'tasks'; render(); break;
+    case 'goSettings': ui.tab = 'settings'; render(); break;
+    case 'toggle': {
+      var id = t.getAttribute('data-id');
+      var tk = null;
+      state.tasks.forEach(function(x){ if(x.id===id) tk = x; });
+      if(!tk) break;
+      if(tk.status === 'done') undoTask(id);
+      else {
+        var got = completeTask(id);
+        render();
+        if(got){ toast('修为 +' + got); beep(700,0.10); }
+      }
+      break;
+    }
+    case 'del': {
+      var did = t.getAttribute('data-id');
+      if(confirm('删除这条功课？')){
+        var tk2 = null;
+        state.tasks.forEach(function(x){ if(x.id===did) tk2 = x; });
+        if(tk2 && tk2.status==='done') undoTask(did);
+        delTask(did);
+      }
+      break;
+    }
+    case 'add': sheetAddTask(); break;
+    case 'saveTask': {
+      var s = ui.sheet;
+      var title = (document.getElementById('taskTitle').value || '').trim();
+      var minEl = document.getElementById('taskMin');
+      var mins = minEl ? +minEl.value : s.minutes;
+      if(!title){ toast('先写点内容'); return; }
+      if(!mins || mins < 1){ toast('时长不对'); return; }
+      addTask({ subject:s.subject, title:title, minutes:mins, diff:s.diff });
+      if(document.getElementById('saveTpl').checked){
+        state.tpl.push({ subject:s.subject, title:title, minutes:mins, diff:s.diff });
+        save();
+      }
+      closeSheet(); render(); toast('已布置');
+      break;
+    }
+    case 'closeSheet': closeSheet(); break;
+    case 'useTpl': {
+      var i = +t.getAttribute('data-i');
+      var tp = state.tpl[i];
+      if(!tp) return;
+      addTask({ subject:tp.subject, title:tp.title, minutes:tp.minutes, diff:tp.diff });
+      render(); toast('已布置');
+      break;
+    }
+    case 'copyYest': {
+      var ys = yesterdayDoneTasks();
+      ys.forEach(function(x){
+        addTask({ subject:x.subject, title:x.title, minutes:x.minutes, diff:x.diff });
+      });
+      render(); toast('已复制 ' + ys.length + ' 项');
+      break;
+    }
+    case 'editRealms': ui.editRealms = !ui.editRealms; render(); break;
+    case 'addRealm':
+      state.realms.push(R('新境界', ['初期']));
+      save(); render(); break;
+    case 'addLayer': {
+      var ri = +t.getAttribute('data-ri');
+      var rr = state.realms[ri];
+      rr.layers.push('第' + (rr.layers.length+1) + '层');
+      save(); render(); break;
+    }
+    case 'delLayer': {
+      var ri2 = +t.getAttribute('data-ri');
+      var rr2 = state.realms[ri2];
+      if(rr2.layers.length <= 1) return;
+      rr2.layers.pop();
+      if(ri2 === state.realm && state.layer >= rr2.layers.length) state.layer = rr2.layers.length-1;
+      save(); render(); break;
+    }
+    case 'delRealm': {
+      var ri3 = +t.getAttribute('data-ri');
+      if(state.realms.length <= 1) return;
+      if(!confirm('删除「' + state.realms[ri3].name + '」？')) return;
+      state.realms.splice(ri3,1);
+      if(state.realm >= state.realms.length) state.realm = state.realms.length-1;
+      var cr = state.realms[state.realm];
+      if(state.layer >= cr.layers.length) state.layer = cr.layers.length-1;
+      save(); render(); break;
+    }
+    case 'export': exportJson(); break;
+    case 'import': importJson(); break;
+    case 'reset':
+      if(confirm('清空全部存档？此操作不可撤销，建议先导出。')){
+        if(confirm('真的清空？修为、功课、境界设置都会重置。')){
+          state = freshState(); save(); ui.tab='home'; render(); toast('已重置');
+        }
+      }
+      break;
+  }
+}
+
+function onMainInput(e){
+  var t = e.target;
+  if(t.hasAttribute && t.hasAttribute('data-rname')){
+    var ri = +t.getAttribute('data-rname');
+    state.realms[ri].name = t.value;
+    save();
+  }
+  if(t.hasAttribute && t.hasAttribute('data-rlayer')){
+    var pair = t.getAttribute('data-rlayer').split('_');
+    var r = state.realms[+pair[0]], li = +pair[1];
+    if(r && r.layers[li] != null) r.layers[li] = t.value;
+    save();
+  }
+  if(t.id === 'examName'){ state.exam.name = t.value; save(); }
+  if(t.id === 'examDate'){
+    state.exam.date = t.value; save();
+    var dl = daysLeft();
+    toast(dl===null ? '已清除考期' : '距考试 ' + dl + ' 天');
+  }
+}
+
+function onMainChange(e){
+  var t = e.target;
+  if(t.id === 'baseXp'){ state.cfg.base = Math.max(1, +t.value || 60); save(); render(); }
+  if(t.id === 'growth'){ state.cfg.growth = Math.max(0, +t.value || 0); save(); render(); }
+  if(t.id === 'per'){ state.cfg.per = Math.max(1, +t.value || 10); save(); render(); }
+  if(t.id === 'mulEasy'){ state.cfg.easy = Math.max(0, +t.value || 1); save(); render(); }
+  if(t.id === 'mulNormal'){ state.cfg.normal = Math.max(0, +t.value || 1.5); save(); render(); }
+  if(t.id === 'mulHard'){ state.cfg.hard = Math.max(0, +t.value || 2.5); save(); render(); }
+  if(t.id === 'saveTpl'){ }
+}
+
+/* sheet 内部点击 */
+function onSheetClick(e){
+  var opt = e.target.closest('.opt');
+  if(opt && opt.parentNode.id === 'segSub'){
+    ui.sheet.subject = opt.getAttribute('data-s');
+    opt.parentNode.querySelectorAll('.opt').forEach(function(o){ o.classList.toggle('on', o===opt); });
+    return;
+  }
+  if(opt && opt.parentNode.id === 'segDiff'){
+    ui.sheet.diff = opt.getAttribute('data-d');
+    opt.parentNode.querySelectorAll('.opt').forEach(function(o){ o.classList.toggle('on', o===opt); });
+    previewXp();
+    return;
+  }
+  var chip = e.target.closest('.chip[data-m]');
+  if(chip){
+    var m = +chip.getAttribute('data-m');
+    ui.sheet.minutes = m;
+    document.getElementById('taskMin').value = m;
+    document.querySelectorAll('#segMin .chip').forEach(function(c){ c.style.borderColor = ''; c.style.color=''; });
+    chip.style.borderColor = '#3f7a5d'; chip.style.color = '#dff7ea';
+    previewXp();
+    return;
+  }
+  var closeBtn = e.target.closest('[data-close]');
+  if(closeBtn){ closeSheet(); return; }
+}
+
+/* 番茄钟点击 */
+function onPomoClick(e){
+  var sec = e.target.closest('[data-psec]');
+  if(sec && ui.pomo){ pomoReset(+sec.getAttribute('data-psec')); return; }
+  var sub = e.target.closest('[data-psub]');
+  if(sub && ui.pomo){ ui.pomo.subject = sub.getAttribute('data-psub'); renderPomo(); return; }
+  var b = e.target.closest('[data-pact]');
+  if(!b || !ui.pomo) return;
+  var act = b.getAttribute('data-pact');
+  if(act==='start') pomoStart();
+  if(act==='pause') pomoPause();
+  if(act==='abandon') abandonPomo();
+  if(act==='close') closePomo();
+}
+
+/* ---------- 导入导出 ---------- */
+function exportJson(){
+  var data = JSON.stringify(state, null, 2);
+  var blob = new Blob([data], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '问道存档-' + todayStr() + '.json';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  state.meta.lastBackup = todayStr();
+  save(); render();
+  toast('已导出存档');
+}
+function importJson(){
+  var inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'application/json,.json';
+  inp.onchange = function(){
+    var f = inp.files && inp.files[0];
+    if(!f) return;
+    var rd = new FileReader();
+    rd.onload = function(){
+      try{
+        var obj = JSON.parse(String(rd.result));
+        if(!obj || !Array.isArray(obj.realms) || !obj.realms.length) throw new Error('不是有效的问道存档');
+        if(!confirm('导入会覆盖当前进度，确定？')) return;
+        state = migrate(obj);
+        save(); render(); toast('导入成功');
+      }catch(err){ toast('导入失败：' + err.message); }
+    };
+    rd.readAsText(f);
+  };
+  inp.click();
+}
+
+/* ---------- 启动 ---------- */
+function boot(){
+  load();
+  carryOver();
+  state.meta.lastOpen = Date.now();
+  save();
+  render();
+
+  // 用 body 级委托：FAB 挂在 body 上，不能只监听 #main
+  document.body.addEventListener('click', onMainClick);
+  document.getElementById('main').addEventListener('input', onMainInput);
+  document.getElementById('main').addEventListener('change', onMainChange);
+  document.getElementById('sheetWrap').addEventListener('click', onSheetClick);
+  document.getElementById('pomo').addEventListener('click', onPomoClick);
+
+  // 手机切后台会冻结定时器，回到前台时按真实时间重算
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden && ui.pomo && ui.pomo.running) pomoTick();
+  });
+
+  document.getElementById('tabbar').addEventListener('click', function(e){
+    var b = e.target.closest('[data-tab]');
+    if(!b) return;
+    ui.tab = b.getAttribute('data-tab');
+    if(ui.tab !== 'realms') ui.editRealms = false;
+    render();
+  });
+}
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>

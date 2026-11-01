@@ -117,6 +117,8 @@ nav#tabbar button.on .ico{filter:none;opacity:1}
   margin-top:1px;cursor:pointer;
 }
 .task.done .box{background:#2e6b4f;border-color:#468c68;color:#eafff4}
+.task.running{border-color:#356b52;background:linear-gradient(180deg,rgba(99,195,154,.07),rgba(0,0,0,0))}
+.task .ctrl{align-self:center;display:flex;gap:6px;flex:0 0 auto}
 .task .tt{font-size:14px}
 .task.done .tt{text-decoration:line-through}
 /* sheet / modal */
@@ -411,7 +413,7 @@ function addTask(o){
     title: o.title || '',
     minutes: Math.max(1, Math.round(o.minutes || 25)),
     diff: o.diff || 'normal',
-    status: 'todo', doneAt: 0, doneMinutes: 0, xp: 0,
+    status: 'todo', doneAt: 0, doneMinutes: 0, xp: 0, startedAt: 0,
     carried: false, carryTimes: 0
   };
   state.tasks.push(tk);
@@ -426,7 +428,7 @@ function completeTask(id, actualMinutes){
   var minutes = actualMinutes || tk.minutes;
   var base = xpFor(minutes, tk.diff);
   var got = Math.max(1, Math.round(base * streakMul()));
-  tk.status = 'done'; tk.doneAt = Date.now();
+  tk.status = 'done'; tk.doneAt = Date.now(); tk.startedAt = 0;
   tk.doneMinutes = minutes; tk.xp = got;
   state.meta.lastAct = todayStr();
   var st = statOf(tk.date);
@@ -445,13 +447,78 @@ function undoTask(id){
   st.xp  = Math.max(0, st.xp - tk.xp);
   st.n   = Math.max(0, st.n - 1);
   state.xp = Math.max(0, state.xp - tk.xp);
-  tk.status = 'todo'; tk.xp = 0; tk.doneAt = 0;
+  tk.status = 'todo'; tk.xp = 0; tk.doneAt = 0; tk.startedAt = 0;
   save(); render();
   toast('已撤销');
 }
 function delTask(id){
   state.tasks = state.tasks.filter(function(x){ return x.id !== id; });
   save(); render();
+}
+
+/* ---------- 功课计时：提前结束按实际时长结算 ---------- */
+function findTask(id){
+  for(var i=0;i<state.tasks.length;i++) if(state.tasks[i].id === id) return state.tasks[i];
+  return null;
+}
+function runningTask(){
+  for(var i=0;i<state.tasks.length;i++) if(state.tasks[i].startedAt) return state.tasks[i];
+  return null;
+}
+function fmtClock(ms){
+  var s = Math.max(0, Math.floor(ms/1000));
+  var h = Math.floor(s/3600), m = Math.floor(s%3600/60), ss = s%60;
+  return h ? (h + ':' + pad(m) + ':' + pad(ss)) : (pad(m) + ':' + pad(ss));
+}
+function startTaskTimer(id){
+  var tk = findTask(id);
+  if(!tk || tk.status === 'done') return;
+  var other = runningTask();
+  if(other && other.id !== id){
+    toast('「' + (other.title || other.subject) + '」正在计时，先结束它');
+    return;
+  }
+  tk.startedAt = Date.now();
+  save(); render();
+  toast('开始计时 · ' + (tk.title || tk.subject));
+  beep(520,0.08);
+}
+function stopTaskTimer(id){
+  var tk = findTask(id);
+  if(!tk) return;
+  var ms = tk.startedAt ? (Date.now() - tk.startedAt) : 0;
+  var plan = tk.minutes;
+  var used = Math.max(1, Math.round(ms / 60000));
+  var forgotten = ms > 8*3600*1000;
+  if(forgotten) used = plan;                 // 忘了关，按计划时长算，避免虚高
+  tk.startedAt = 0;
+  var got = completeTask(id, used);
+  render();
+  if(!got) return;
+  if(forgotten){
+    toast('计时超过 8 小时，已按计划 ' + plan + ' 分钟结算 · +' + got);
+  }else if(used < plan){
+    toast('提前结束 · 实修 ' + used + ' 分钟（计划 ' + plan + '）· 修为 +' + got);
+  }else{
+    toast('实修 ' + used + ' 分钟 · 修为 +' + got);
+  }
+  beep(700,0.10);
+}
+function updateTimers(){
+  var els = document.querySelectorAll('[data-timer]');
+  for(var i=0;i<els.length;i++){
+    var el = els[i], tk = findTask(el.getAttribute('data-timer'));
+    if(!tk || !tk.startedAt) continue;
+    var txt = '● ' + fmtClock(Date.now() - tk.startedAt);
+    if(el.textContent !== txt) el.textContent = txt;
+  }
+}
+var timerHdl = null;
+function syncTimers(){
+  var run = runningTask();
+  if(run && !timerHdl) timerHdl = setInterval(updateTimers, 500);
+  if(!run && timerHdl){ clearInterval(timerHdl); timerHdl = null; }
+  if(run) updateTimers();
 }
 
 /* ---------- 番茄钟 ---------- */
@@ -698,17 +765,28 @@ function viewHome(){
 }
 
 function taskRow(x){
-  return '<div class="task ' + (x.status==='done'?'done':'') + '" data-task="' + x.id + '">' +
+  var running = !!x.startedAt;
+  var shownMin = (x.status === 'done' && x.doneMinutes) ? x.doneMinutes : x.minutes;
+  var ctrl = '';
+  if(x.status !== 'done'){
+    ctrl = running
+      ? '<button class="btn sm" data-act="stopTask" data-id="' + x.id + '">结束</button>'
+      : '<button class="btn sm ghost" data-act="startTask" data-id="' + x.id + '" title="开始计时">▶</button>';
+  }
+  return '<div class="task ' + (x.status==='done'?'done':'') + (running?' running':'') + '" data-task="' + x.id + '">' +
     '<div class="box" data-act="toggle" data-id="' + x.id + '">✓</div>' +
     '<div class="grow">' +
       '<div class="tt ell">' + esc(x.title) + '</div>' +
       '<div class="row small dim" style="gap:6px;margin-top:3px;flex-wrap:wrap">' +
         '<span class="tag sub-' + esc(x.subject) + '">' + esc(x.subject) + '</span>' +
-        '<span>' + x.minutes + '分 · ' + diffName(x.diff) + ' · +' + (x.xp || xpFor(x.minutes, x.diff)) + '</span>' +
+        '<span>' + shownMin + '分 · ' + diffName(x.diff) + ' · +' + (x.xp || xpFor(shownMin, x.diff)) + '</span>' +
+        (running ? '<span data-timer="' + x.id + '" style="color:#7fd9ae;font-variant-numeric:tabular-nums">● 00:00</span>' : '') +
         (x.carried ? '<span style="color:var(--red)">拖延' + x.carryTimes + '次</span>' : '') +
       '</div>' +
     '</div>' +
-    '<button class="btn sm ghost" data-act="del" data-id="' + x.id + '" style="padding:4px 8px">✕</button>' +
+    '<div class="ctrl">' + ctrl +
+      '<button class="btn sm ghost" data-act="del" data-id="' + x.id + '" style="padding:4px 8px">✕</button>' +
+    '</div>' +
   '</div>';
 }
 
@@ -721,10 +799,11 @@ function viewTasks(){
     '<h2 style="font-size:17px">今日功课</h2>' +
     '<span class="small dim">' + todayStr().replace(/-/g,'/') + '</span></div>';
 
-  html += '<div class="row" style="gap:8px;margin-bottom:12px">' +
+  html += '<div class="row" style="gap:8px;margin-bottom:6px">' +
     '<button class="btn sm grow" data-act="add">＋ 新功课</button>' +
     (yesterdayDoneTasks().length ? '<button class="btn sm grow ghost" data-act="copyYest">复制昨日</button>' : '') +
-  '</div>';
+  '</div>' +
+  '<div class="small dim" style="margin-bottom:12px">点 ▶ 开始计时，结束时按<b>实际时长</b>折算修为；直接点 ✓ 按计划时长结算。</div>';
 
   if(state.tpl.length){
     html += '<div class="small muted" style="margin-bottom:6px">常用功课</div><div class="chips" style="margin-bottom:14px">' +
@@ -867,6 +946,7 @@ function render(){
   document.querySelectorAll('#tabbar button').forEach(function(b){
     b.classList.toggle('on', b.getAttribute('data-tab') === ui.tab);
   });
+  syncTimers();
   // FAB 只在任务页
   var fab = document.querySelector('.fab');
   if(ui.tab === 'tasks'){
@@ -954,6 +1034,7 @@ function onMainClick(e){
       state.tasks.forEach(function(x){ if(x.id===id) tk = x; });
       if(!tk) break;
       if(tk.status === 'done') undoTask(id);
+      else if(tk.startedAt){ stopTaskTimer(id); }
       else {
         var got = completeTask(id);
         render();
@@ -961,6 +1042,8 @@ function onMainClick(e){
       }
       break;
     }
+    case 'startTask': startTaskTimer(t.getAttribute('data-id')); break;
+    case 'stopTask': stopTaskTimer(t.getAttribute('data-id')); break;
     case 'del': {
       var did = t.getAttribute('data-id');
       if(confirm('删除这条功课？')){

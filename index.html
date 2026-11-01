@@ -397,8 +397,19 @@ function todayTasks(){
   var t = todayStr();
   return state.tasks.filter(function(x){ return x.date === t; });
 }
-function carryOver(){
-  var t = todayStr(), moved = 0;
+/* 今日预计修为（按连击加成折算；已完成的按实际时长算） */
+function todayPlan(){
+  var ts = todayTasks(), min = 0, xp = 0, doneXp = 0, doneN = 0;
+  var sm = streakMul();
+  ts.forEach(function(x){
+    var m = (x.status === 'done' && x.doneMinutes) ? x.doneMinutes : x.minutes;
+    var e = Math.max(1, Math.round(xpFor(m, x.diff) * sm));
+    min += m; xp += e;
+    if(x.status === 'done'){ doneXp += (x.xp || e); doneN++; }
+  });
+  return { min:min, xp:xp, doneXp:doneXp, doneN:doneN, n:ts.length, sm:sm };
+}
+function carryOver(){  var t = todayStr(), moved = 0;
   state.tasks.forEach(function(x){
     if(x.status === 'todo' && x.date < t){
       x.date = t; x.carried = true; x.carryTimes = (x.carryTimes||0) + 1; moved++;
@@ -807,6 +818,23 @@ function viewTasks(){
   '</div>' +
   '<div class="small dim" style="margin-bottom:12px">点 ▶ 开始计时，结束时按<b>实际时长</b>折算修为；直接点 ✓ 按计划时长结算。</div>';
 
+  var plan = todayPlan();
+  if(plan.n){
+    html += '<div class="card flat" style="padding:11px 13px;margin-bottom:12px">' +
+      '<div class="row between small">' +
+        '<span class="muted">今日预计</span>' +
+        '<span><b style="color:var(--jade);font-size:15px">+' + plan.xp + '</b> 修为 · ' + plan.min + ' 分钟</span>' +
+      '</div>' +
+      '<div class="small dim" style="margin-top:5px">' +
+        '已完成 ' + plan.doneN + '/' + plan.n + ' 项' +
+        (plan.doneXp ? ' · 已入账 +' + plan.doneXp : '') +
+        (plan.sm > 1 ? ' · 含连击 ×' + plan.sm.toFixed(2) : '') +
+        (plan.min < 540 ? ' · 距 9 小时还差 ' + (540 - plan.min) + ' 分（约 +' +
+            Math.round(xpFor(540 - plan.min, 'normal') * plan.sm) + '）' : '') +
+      '</div>' +
+    '</div>';
+  }
+
   if(state.tpl.length){
     html += '<div class="small muted" style="margin-bottom:6px">常用功课</div><div class="chips" style="margin-bottom:14px">' +
       state.tpl.map(function(t, i){
@@ -1038,6 +1066,15 @@ function previewXp(){
   var base = xpFor(s.minutes, s.diff);
   el.innerHTML = '预计得修为 <b style="color:var(--jade)">+' + base + '</b>' +
     (streakMul()>1 ? ' × 连击加成 ' + streakMul().toFixed(2) + ' ≈ +' + Math.round(base*streakMul()) : '');
+  var others = 0, otherN = 0;
+  todayTasks().forEach(function(x){
+    if(x.status === 'done') return;
+    others += xpFor(x.minutes, x.diff); otherN++;
+  });
+  if(otherN){
+    el.innerHTML += '<div class="small dim" style="margin-top:5px">今天已布置 ' + otherN + ' 项共 ' + others +
+      '，加上这条共约 <b>+' + (base + others) + '</b></div>';
+  }
 }
 
 function onMainClick(e){

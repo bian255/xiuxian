@@ -912,6 +912,12 @@ function viewSettings(){
     '</div>' +
     '<div class="small dim" style="margin-top:8px">修为 = 分钟 ÷ 每分钟折算 × 难度系数，再乘连击加成。' +
       '每层所需 = 基础修为 × 倍率<sup>已过的层数</sup>，倍率越大后期越难。改完即时生效。</div>' +
+    '<div class="small muted" style="margin:14px 0 8px">一键预设</div>' +
+    '<div class="row" style="gap:8px">' +
+      '<button class="btn sm grow" data-act="preset" data-k="sprint45">45 天冲刺</button>' +
+      '<button class="btn sm grow ghost" data-act="preset" data-k="fast">前期极速</button>' +
+    '</div>' +
+    '<div class="small dim" style="margin-top:6px">45 天冲刺＝每天 9 小时、全普通难度，第 45 天入化神；前期极速＝炼气 8 天、后期更难。套用后仍可手动微调。</div>' +
   '</div>';
 
   html += '<div class="card"><div class="small muted" style="margin-bottom:10px">存档</div>' +
@@ -939,6 +945,22 @@ function viewSettings(){
 function numFld(id, label, val){
   return '<label class="fld grow" style="margin-bottom:0"><span>' + label + '</span>' +
     '<input id="' + id + '" type="number" step="0.01" value="' + val + '"></label>';
+}
+
+/* 一键预设：按每天 9 小时、全部「普通」难度反解出来的参数 */
+var PRESETS = {
+  sprint45: { label:'45 天冲刺', base:67,  curve:1.12 },
+  fast:     { label:'前期极速', base:46,  curve:1.15 }
+};
+function applyPreset(k){
+  var p = PRESETS[k];
+  if(!p) return;
+  state.cfg.base = p.base;
+  state.cfg.curve = p.curve;
+  state.cfg.per = 10;
+  state.cfg.easy = 1; state.cfg.normal = 1.5; state.cfg.hard = 2.5;
+  save(); render();
+  toast('已套用「' + p.label + '」预设');
 }
 
 var VIEWS = { home:viewHome, tasks:viewTasks, realms:viewRealms, settings:viewSettings };
@@ -1119,6 +1141,7 @@ function onMainClick(e){
       save(); render(); break;
     }
     case 'export': exportJson(); break;
+    case 'preset': applyPreset(t.getAttribute('data-k')); break;
     case 'import': importJson(); break;
     case 'reset':
       if(confirm('清空全部存档？此操作不可撤销，建议先导出。')){

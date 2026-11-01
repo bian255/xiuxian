@@ -258,7 +258,7 @@ function freshState(){
     streak: { n: 0, last: '' },
     pills: 0,
     exam: { name:'考研初试', date:'' },
-    cfg: { base:60, growth:0.12, per:10, easy:1, normal:1.5, hard:2.5, backupDays:7, pillXp:40 },
+    cfg: { base:70, growth:0.12, curve:1.12, per:10, easy:1, normal:1.5, hard:2.5, backupDays:7, pillXp:40 },
     stats: {},
     meta: { createdAt: Date.now(), lastBackup: '', lastOpen: '' }
   };
@@ -306,7 +306,9 @@ function globalIndex(){
   return n + state.layer;
 }
 function needXp(){
-  return Math.max(1, Math.round(state.cfg.base * (1 + state.cfg.growth * globalIndex())));
+  // 指数曲线：越往后每一层越难，前期推进快
+  var ratio = state.cfg.curve || 1.12;
+  return Math.max(1, Math.round(state.cfg.base * Math.pow(ratio, globalIndex())));
 }
 function xpFor(minutes, diffKey){
   var mul = state.cfg[diffKey] != null ? state.cfg[diffKey] : 1.5;
@@ -900,7 +902,7 @@ function viewSettings(){
   html += '<div class="card"><div class="small muted" style="margin-bottom:10px">修行参数</div>' +
     '<div class="row" style="gap:10px">' +
       numFld('baseXp', '每层基础修为', state.cfg.base) +
-      numFld('growth', '每层增幅', state.cfg.growth) +
+      numFld('curve', '每层倍率', state.cfg.curve) +
       numFld('per', '每分钟折算', state.cfg.per) +
     '</div>' +
     '<div class="row" style="gap:10px">' +
@@ -908,7 +910,8 @@ function viewSettings(){
       numFld('mulNormal', '普通系数', state.cfg.normal) +
       numFld('mulHard', '困难系数', state.cfg.hard) +
     '</div>' +
-    '<div class="small dim" style="margin-top:8px">修为 = 分钟 ÷ 每分钟折算 × 难度系数，再乘连击加成。改完即时生效。</div>' +
+    '<div class="small dim" style="margin-top:8px">修为 = 分钟 ÷ 每分钟折算 × 难度系数，再乘连击加成。' +
+      '每层所需 = 基础修为 × 倍率<sup>已过的层数</sup>，倍率越大后期越难。改完即时生效。</div>' +
   '</div>';
 
   html += '<div class="card"><div class="small muted" style="margin-bottom:10px">存档</div>' +
@@ -1151,7 +1154,7 @@ function onMainInput(e){
 function onMainChange(e){
   var t = e.target;
   if(t.id === 'baseXp'){ state.cfg.base = Math.max(1, +t.value || 60); save(); render(); }
-  if(t.id === 'growth'){ state.cfg.growth = Math.max(0, +t.value || 0); save(); render(); }
+  if(t.id === 'curve'){ state.cfg.curve = Math.max(1, +t.value || 1.12); save(); render(); }
   if(t.id === 'per'){ state.cfg.per = Math.max(1, +t.value || 10); save(); render(); }
   if(t.id === 'mulEasy'){ state.cfg.easy = Math.max(0, +t.value || 1); save(); render(); }
   if(t.id === 'mulNormal'){ state.cfg.normal = Math.max(0, +t.value || 1.5); save(); render(); }

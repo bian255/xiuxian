@@ -119,6 +119,13 @@ nav#tabbar button.on .ico{filter:none;opacity:1}
 .task.done .box{background:#2e6b4f;border-color:#468c68;color:#eafff4}
 .task.running{border-color:#356b52;background:linear-gradient(180deg,rgba(99,195,154,.07),rgba(0,0,0,0))}
 .task .ctrl{align-self:center;display:flex;gap:6px;flex:0 0 auto}
+/* history */
+.hbars{display:flex;align-items:flex-end;gap:4px;height:96px}
+.hbar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;cursor:pointer}
+.hbar i{width:100%;max-width:16px;border-radius:4px;background:linear-gradient(180deg,#4c9e77,#2f6b52);display:block}
+.hbar.zero i{background:#1e2e26}
+.hbar span{font-size:9px;color:#6f8479}
+.dayrow{padding:11px 12px;border:1px solid var(--line);background:var(--panel);border-radius:11px;margin-bottom:8px;cursor:pointer}
 .task .tt{font-size:14px}
 .task.done .tt{text-decoration:line-through}
 /* sheet / modal */
@@ -179,6 +186,7 @@ a{color:var(--jade)}
     <button data-tab="home" class="on"><span class="ico">☯</span>修炼</button>
     <button data-tab="tasks"><span class="ico">📜</span>任务</button>
     <button data-tab="realms"><span class="ico">⛰</span>境界</button>
+    <button data-tab="history"><span class="ico">📖</span>记录</button>
     <button data-tab="settings"><span class="ico">⚙</span>设置</button>
   </nav>
 </div>
@@ -835,11 +843,20 @@ function viewTasks(){
     '</div>';
   }
 
+  html += '<div class="row between" style="margin:2px 0 8px">' +
+    '<span class="small muted">常用功课' + (state.tpl.length ? '' : '（空）') + '</span>' +
+    '<button class="btn sm ghost" data-act="addTpl" style="padding:3px 9px">＋ 新增</button>' +
+  '</div>';
   if(state.tpl.length){
-    html += '<div class="small muted" style="margin-bottom:6px">常用功课</div><div class="chips" style="margin-bottom:14px">' +
+    html += '<div class="chips" style="margin-bottom:14px">' +
       state.tpl.map(function(t, i){
-        return '<span class="chip" data-act="useTpl" data-i="' + i + '">' + esc(t.subject) + ' · ' + esc(t.title) + '</span>';
+        return '<span class="chip" data-act="useTpl" data-i="' + i + '">' +
+          esc(t.subject) + ' · ' + esc(t.title) +
+          '<i data-act="delTpl" data-i="' + i + '" style="margin-left:7px;font-style:normal;color:#7d8f86;padding:0 2px">✕</i>' +
+        '</span>';
       }).join('') + '</div>';
+  }else{
+    html += '<div class="small dim" style="margin-bottom:14px">把每天要重复的功课存成常用，以后一键铺开。</div>';
   }
 
   if(!ts.length){
@@ -991,7 +1008,85 @@ function applyPreset(k){
   toast('已套用「' + p.label + '」预设');
 }
 
-var VIEWS = { home:viewHome, tasks:viewTasks, realms:viewRealms, settings:viewSettings };
+/* ---------- 历史记录 ---------- */
+function doneTasksOf(d){
+  return state.tasks.filter(function(x){ return x.date === d && x.status === 'done'; });
+}
+function historyDates(){
+  var seen = {};
+  state.tasks.forEach(function(x){ if(x.status === 'done') seen[x.date] = 1; });
+  return Object.keys(seen).sort().reverse();
+}
+function fmtHours(min){
+  var h = Math.floor(min/60), m = Math.round(min%60);
+  return h ? (h + ' 小时 ' + m + ' 分') : (m + ' 分');
+}
+function weekdayCN(d){
+  var p = d.split('-'), dt = new Date(+p[0], +p[1]-1, +p[2]);
+  return '日一二三四五六'.charAt(dt.getDay());
+}
+function viewHistory(){
+  var dates = historyDates();
+  var html = '<h2 style="font-size:17px;margin:2px 0 12px">修习记录</h2>';
+  if(!dates.length){
+    return html + '<div class="card" style="text-align:center;padding:26px 14px">' +
+      '<div class="muted">还没有记录</div>' +
+      '<div class="small dim" style="margin-top:6px">完成第一条功课后，这里会留下痕迹</div></div>';
+  }
+  var totalMin = 0, totalXp = 0, totalN = 0;
+  dates.forEach(function(d){
+    doneTasksOf(d).forEach(function(x){ totalMin += x.doneMinutes||0; totalXp += x.xp||0; totalN++; });
+  });
+
+  html += '<div class="card">' +
+    '<div class="row between">' +
+      '<div><div class="small muted">累计修行</div>' +
+        '<div style="font-size:20px;color:var(--gold)">' + fmtHours(totalMin) + '</div></div>' +
+      '<div style="text-align:right"><div class="small muted">累计修为</div>' +
+        '<div style="font-size:20px;color:var(--jade)">' + totalXp + '</div></div>' +
+    '</div>' +
+    '<div class="small dim" style="margin-top:10px">' + dates.length + ' 天 · ' + totalN +
+      ' 条功课 · 日均 ' + Math.round(totalMin/dates.length) + ' 分钟</div>' +
+  '</div>';
+
+  var arr = [];
+  for(var i=13;i>=0;i--) arr.push(shiftDay(todayStr(), -i));
+  html += '<div class="card"><div class="row between" style="margin-bottom:10px">' +
+    '<span class="small muted">近 14 天</span><span class="small dim">满格 = 9 小时</span></div>' +
+    '<div class="hbars">' + arr.map(function(d){
+      var m = 0;
+      doneTasksOf(d).forEach(function(x){ m += x.doneMinutes||0; });
+      var h = m ? Math.max(4, Math.round(m/540*66)) : 3;
+      return '<div class="hbar' + (m?'':' zero') + '" data-act="openDay" data-d="' + d + '">' +
+        '<i style="height:' + h + 'px"></i><span>' + d.slice(8) + '</span></div>';
+    }).join('') + '</div></div>';
+
+  html += '<div class="small muted" style="margin:16px 0 8px">逐日明细</div>';
+  html += dates.slice(0,90).map(function(d){
+    var list = doneTasksOf(d), m = 0, xp = 0;
+    list.forEach(function(x){ m += x.doneMinutes||0; xp += x.xp||0; });
+    var open = ui.openDay === d;
+    var body = '';
+    if(open){
+      body = '<div style="margin-top:8px">' + list.map(function(x){
+        return '<div class="row between small" style="padding:5px 0;border-top:1px solid var(--line)">' +
+          '<span class="grow ell"><span class="tag sub-' + esc(x.subject) + '">' + esc(x.subject) + '</span> ' +
+            esc(x.title) + '</span>' +
+          '<span class="dim">' + (x.doneMinutes||0) + ' 分 · +' + (x.xp||0) + '</span></div>';
+      }).join('') + '</div>';
+    }
+    return '<div class="dayrow" data-act="openDay" data-d="' + d + '">' +
+      '<div class="row between">' +
+        '<span>' + (+d.slice(5,7)) + '/' + (+d.slice(8,10)) +
+          ' <span class="dim small">周' + weekdayCN(d) + '</span></span>' +
+        '<span class="small">' + list.length + ' 项 · ' + m + ' 分 · <b style="color:var(--jade)">+' + xp + '</b></span>' +
+      '</div>' + body +
+    '</div>';
+  }).join('');
+  return html;
+}
+
+var VIEWS = { home:viewHome, tasks:viewTasks, realms:viewRealms, history:viewHistory, settings:viewSettings };
 
 function render(){
   var host = document.getElementById('main');
@@ -1126,10 +1221,32 @@ function onMainClick(e){
       if(!mins || mins < 1){ toast('时长不对'); return; }
       addTask({ subject:s.subject, title:title, minutes:mins, diff:s.diff });
       if(document.getElementById('saveTpl').checked){
-        state.tpl.push({ subject:s.subject, title:title, minutes:mins, diff:s.diff });
-        save();
+        var dup = state.tpl.some(function(x){
+          return x.subject===s.subject && x.title===title && x.minutes===mins && x.diff===s.diff;
+        });
+        if(!dup){
+          state.tpl.push({ subject:s.subject, title:title, minutes:mins, diff:s.diff });
+          save();
+        }
       }
       closeSheet(); render(); toast('已布置');
+      break;
+    }
+    case 'addTpl': sheetAddTask({ save:true }); break;
+    case 'delTpl': {
+      var di = +t.getAttribute('data-i');
+      var dt = state.tpl[di];
+      if(!dt) break;
+      if(confirm('删掉常用功课「' + dt.title + '」？')) {
+        state.tpl.splice(di, 1);
+        save(); render(); toast('已删除');
+      }
+      break;
+    }
+    case 'openDay': {
+      var od = t.getAttribute('data-d');
+      ui.openDay = (ui.openDay === od) ? '' : od;
+      render();
       break;
     }
     case 'closeSheet': closeSheet(); break;

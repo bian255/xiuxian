@@ -1052,11 +1052,11 @@ function viewHistory(){
   var arr = [];
   for(var i=13;i>=0;i--) arr.push(shiftDay(todayStr(), -i));
   html += '<div class="card"><div class="row between" style="margin-bottom:10px">' +
-    '<span class="small muted">近 14 天</span><span class="small dim">满格 = 9 小时</span></div>' +
+    '<span class="small muted">近 14 天</span><span class="small dim">满格 = 12 小时</span></div>' +
     '<div class="hbars">' + arr.map(function(d){
       var m = 0;
       doneTasksOf(d).forEach(function(x){ m += x.doneMinutes||0; });
-      var h = m ? Math.max(4, Math.round(m/540*66)) : 3;
+      var h = m ? Math.max(4, Math.round(m/720*66)) : 3;
       return '<div class="hbar' + (m?'':' zero') + '" data-act="openDay" data-d="' + d + '">' +
         '<i style="height:' + h + 'px"></i><span>' + d.slice(8) + '</span></div>';
     }).join('') + '</div></div>';

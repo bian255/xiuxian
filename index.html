@@ -149,6 +149,26 @@ nav#tabbar button.on .ico{filter:none;opacity:1}
   position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px
 }
 .ring .num b{font-size:44px;font-weight:300;letter-spacing:1px;font-variant-numeric:tabular-nums}
+/* 破境仪式 */
+#ceremony{position:fixed;inset:0;z-index:95;display:none;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 46%,rgba(58,44,16,.97),rgba(4,7,5,.985) 68%)}
+#ceremony.on{display:flex}
+.ce-ring{position:absolute;left:50%;top:46%;width:110px;height:110px;margin:-55px 0 0 -55px;
+  border-radius:50%;border:1px solid rgba(217,179,108,.6);animation:ceRing 1500ms ease-out forwards}
+.ce-core{position:relative;z-index:2;text-align:center;padding:0 24px}
+.ce-old{font-size:13px;color:#8ba598;letter-spacing:4px;opacity:0;animation:ceFade .6s .15s forwards}
+.ce-name{font-size:42px;color:#f2ddaa;letter-spacing:8px;margin:14px 0 6px;opacity:0;
+  transform:scale(.72);animation:cePop .95s .35s cubic-bezier(.2,1.45,.4,1) forwards;
+  text-shadow:0 0 34px rgba(217,179,108,.6)}
+.ce-sub{font-size:12px;color:#a98f5c;letter-spacing:3px;opacity:0;animation:ceFade .8s 1.05s forwards}
+.ce-tip{position:absolute;bottom:calc(56px + env(safe-area-inset-bottom));font-size:12px;color:#5f7568;
+  opacity:0;animation:ceFade .6s 1.7s forwards}
+.ce-spark{position:absolute;left:50%;top:46%;width:3px;height:3px;border-radius:50%;background:#e8c987;
+  box-shadow:0 0 9px #d9b36c;opacity:0;animation:ceFly 1500ms ease-out forwards}
+@keyframes ceRing{0%{transform:scale(.15);opacity:0}25%{opacity:1}100%{transform:scale(6.2);opacity:0}}
+@keyframes cePop{0%{opacity:0;transform:scale(.72)}100%{opacity:1;transform:scale(1)}}
+@keyframes ceFade{to{opacity:1}}
+@keyframes ceFly{0%{opacity:0;transform:translate(0,0) scale(.4)}18%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.15)}}
 /* toast */
 #toast{
   position:fixed;left:50%;bottom:96px;transform:translate(-50%,10px);z-index:90;
@@ -197,6 +217,7 @@ a{color:var(--jade)}
 </div>
 
 <div id="pomo"></div>
+<div id="ceremony"></div>
 <div id="toast"></div>
 
 <script>
@@ -304,6 +325,7 @@ function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(state)); }
   catch(e){ toast('存档写入失败：' + e.message); }
   snapshot();
+  scheduleCloudPush();
 }
 
 /* ---------- 自动备份槽：每天留一档，最多 7 档 ---------- */
@@ -390,8 +412,50 @@ function doBreakthrough(){
   save();
   haptic([18,60,18]);
   beep(660, 0.18); setTimeout(function(){ beep(880, 0.24); }, 180);
-  toast('突破成功 · 已入' + r.name);
   render();
+  ceremony(from, r.name);
+}
+
+/* 破境仪式：金光迸散 + 境界名浮现，点一下跳过 */
+var CEREMONY_MS = 2600;
+function ceremony(fromName, toName){
+  var host = document.getElementById('ceremony');
+  if(!host) return;
+  var html = '';
+  for(var i=0;i<16;i++){
+    var a = (Math.PI*2/16)*i + (Math.random()*0.4-0.2);
+    var d = 110 + Math.random()*80;
+    html += '<i class="ce-spark" style="--dx:' + (Math.cos(a)*d).toFixed(1) + 'px;' +
+      '--dy:' + (Math.sin(a)*d).toFixed(1) + 'px;animation-delay:' + (300+i*22) + 'ms"></i>';
+  }
+  html += '<i class="ce-ring" style="animation-delay:120ms"></i>' +
+    '<i class="ce-ring" style="animation-delay:340ms;border-color:rgba(232,201,135,.35)"></i>';
+  html += '<div class="ce-core">' +
+      '<div class="ce-old">' + esc(fromName) + ' · 圆满</div>' +
+      '<div class="ce-name">' + esc(toName) + '</div>' +
+      '<div class="ce-sub">— 破 境 成 功 —</div>' +
+    '</div>' +
+    '<div class="ce-tip">轻触继续</div>';
+  host.innerHTML = html;
+  host.classList.add('on');
+  host.onclick = function(){ endCeremony(); };
+
+  haptic([10,40,10,40,30]);
+  beep(523, 0.12);
+  setTimeout(function(){ beep(659, 0.12); }, 110);
+  setTimeout(function(){ beep(784, 0.14); }, 220);
+  setTimeout(function(){ beep(1046, 0.4); }, 340);
+
+  clearTimeout(ceremony._t);
+  ceremony._t = setTimeout(endCeremony, CEREMONY_MS + 1400);
+}
+function endCeremony(){
+  var host = document.getElementById('ceremony');
+  if(!host || !host.classList.contains('on')) return;
+  clearTimeout(ceremony._t);
+  host.classList.remove('on');
+  host.onclick = null;
+  setTimeout(function(){ if(!host.classList.contains('on')) host.innerHTML = ''; }, 260);
 }
 
 /* ---------- 连击 / 统计 ---------- */
@@ -579,7 +643,7 @@ function beep(freq, dur){
 
 function openPomo(){
   ui.pomo = {
-    subject: '数学', diff: 'normal', total: 25*60, left: 25*60,
+    mode: 'down', subject: '数学', diff: 'normal', total: 25*60, left: 25*60,
     running: false, startedAt: 0
   };
   renderPomo(); document.getElementById('pomo').classList.add('on');
@@ -592,6 +656,19 @@ function closePomo(){
 }
 function pomoTick(){
   var p = ui.pomo; if(!p || !p.running) return;
+  var el = document.querySelector('#pomo .num b');
+  var arc = document.querySelector('#pomo .ring circle.prog');
+  if(p.mode === 'up'){
+    // 正计时：一直往上走，不自动结束
+    p.left = Math.max(0, Math.floor((Date.now() - p.startAt) / 1000));
+    if(el) el.textContent = fmtSec(p.left);
+    if(arc){
+      var C2 = 2*Math.PI*84;
+      var fill = Math.min(1, p.left / p.total);
+      arc.style.strokeDashoffset = C2 * (1 - fill);
+    }
+    return;
+  }
   var left = Math.max(0, Math.ceil((p.endAt - Date.now()) / 1000));
   p.left = left;
   if(left <= 0){
@@ -601,9 +678,7 @@ function pomoTick(){
     finishPomo();
     return;
   }
-  var el = document.querySelector('#pomo .num b');
   if(el) el.textContent = fmtSec(p.left);
-  var arc = document.querySelector('#pomo .ring circle.prog');
   if(arc){
     var C = 2*Math.PI*84;
     arc.style.strokeDashoffset = C * (1 - p.left/p.total);
@@ -627,7 +702,11 @@ function unlockScreen(){
 function pomoStart(){
   var p = ui.pomo; if(!p || p.running) return;
   p.running = true;
-  p.endAt = Date.now() + p.left * 1000;
+  if(p.mode === 'up'){
+    p.startAt = Date.now() - p.left * 1000;   // 继续时接着走
+  }else{
+    p.endAt = Date.now() + p.left * 1000;
+  }
   p.timer = setInterval(pomoTick, 250);
   lockScreen();
   haptic(); beep(440,0.1);
@@ -635,7 +714,8 @@ function pomoStart(){
 }
 function pomoPause(){
   var p = ui.pomo; if(!p || !p.running) return;
-  p.left = Math.max(0, Math.ceil((p.endAt - Date.now()) / 1000));
+  if(p.mode === 'up') p.left = Math.max(0, Math.floor((Date.now() - p.startAt)/1000));
+  else p.left = Math.max(0, Math.ceil((p.endAt - Date.now()) / 1000));
   p.running = false; clearInterval(p.timer);
   unlockScreen();
   renderPomo();
@@ -644,7 +724,14 @@ function pomoReset(sec){
   var p = ui.pomo; if(!p) return;
   p.running = false; clearInterval(p.timer);
   unlockScreen();
-  p.total = sec; p.left = sec;
+  p.total = sec; p.left = (p.mode === 'up' ? 0 : sec);
+  renderPomo();
+}
+function pomoSetMode(mode){
+  var p = ui.pomo; if(!p || p.running) return;
+  p.mode = mode;
+  p.total = 25*60;
+  p.left = (mode === 'up' ? 0 : 25*60);
   renderPomo();
 }
 function finishPomo(){
@@ -659,22 +746,34 @@ function finishPomo(){
 }
 function abandonPomo(){
   var p = ui.pomo;
-  var used = Math.round((p.total - p.left)/60);
-  if(used >= 5){
-    var tk = addTask({ subject:p.subject, title:'闭关 · '+p.subject+'（提前收功）', minutes:used, diff:p.diff });
+  var used = (p.mode === 'up')
+    ? Math.max(0, Math.round(p.left/60))
+    : Math.round((p.total - p.left)/60);
+  var minNeed = (p.mode === 'up') ? 1 : 5;
+  if(used >= minNeed){
+    var title = '闭关 · ' + p.subject + (p.mode === 'up' ? '（正计时）' : '（提前收功）');
+    var tk = addTask({ subject:p.subject, title:title, minutes:used, diff:p.diff });
     var got = completeTask(tk.id, used);
     closePomo(); render();
     toast('收功 · 实修 ' + used + ' 分钟 +' + (got||0));
   }else{
     closePomo(); render();
-    toast('已放弃');
+    toast(p.mode === 'up' ? '还没到 1 分钟' : '已放弃');
   }
 }
 function renderPomo(){
   var p = ui.pomo, host = document.getElementById('pomo');
   if(!p){ host.innerHTML=''; return; }
   var C = 2*Math.PI*84;
-  var pct = p.total ? (1 - p.left/p.total) : 0;
+  var pct = p.mode === 'up'
+    ? Math.min(1, p.left / p.total)
+    : (p.total ? (1 - p.left/p.total) : 0);
+  var estimate = p.mode === 'up'
+    ? xpFor(Math.max(1, Math.round(p.left/60)), p.diff)
+    : xpFor(p.total/60, p.diff);
+  var sub = p.mode === 'up'
+    ? esc(p.subject) + ' · 正计时 · 已修 ' + Math.floor(p.left/60) + ' 分'
+    : esc(p.subject) + ' · ' + diffName(p.diff) + ' · 预计 +' + estimate;
   host.innerHTML =
     '<div class="small dim">' + esc(state.exam.name || '考研') + ' · 闭关修炼</div>' +
     '<div class="ring">' +
@@ -685,14 +784,19 @@ function renderPomo(){
           'stroke-dashoffset="' + (C*(1-pct)).toFixed(1) + '"/>' +
       '</svg>' +
       '<div class="num"><b>' + fmtSec(p.left) + '</b>' +
-        '<span class="small muted">' + esc(p.subject) + ' · ' + diffName(p.diff) +
-        ' · 预计 +' + xpFor(p.total/60, p.diff) + '</span></div>' +
+        '<span class="small muted">' + sub + '</span></div>' +
     '</div>' +
     '<div class="seg" style="justify-content:center">' +
-      [25,45,60,90].map(function(m){
-        return '<div class="opt' + (p.total===m*60?' on':'') + '" data-psec="' + (m*60) + '">' + m + '分</div>';
-      }).join('') +
+      '<div class="opt' + (p.mode==='down'?' on':'') + '" data-pmode="down">倒计时</div>' +
+      '<div class="opt' + (p.mode==='up'?' on':'') + '" data-pmode="up">正计时</div>' +
     '</div>' +
+    (p.mode === 'down'
+      ? '<div class="seg" style="justify-content:center">' +
+          [25,45,60,90].map(function(m){
+            return '<div class="opt' + (p.total===m*60?' on':'') + '" data-psec="' + (m*60) + '">' + m + '分</div>';
+          }).join('') +
+        '</div>'
+      : '<div class="small dim" style="text-align:center">正计时不设上限，随时「收功」按实修时长结算</div>') +
     '<div class="seg" style="justify-content:center">' +
       SUBJECTS.map(function(s){
         return '<div class="opt' + (p.subject===s?' on':'') + '" data-psub="' + esc(s) + '">' + esc(s) + '</div>';
@@ -701,7 +805,8 @@ function renderPomo(){
     '<div class="row" style="gap:10px;margin-top:6px">' +
       (p.running
         ? '<button class="btn primary" data-pact="pause">暂停</button>'
-        : '<button class="btn primary" data-pact="start">' + (p.left===p.total?'开始闭关':'继续') + '</button>') +
+        : '<button class="btn primary" data-pact="start">' +
+            (p.mode === 'up' ? (p.left ? '继续' : '开始正计时') : (p.left===p.total?'开始闭关':'继续')) + '</button>') +
       '<button class="btn ghost" data-pact="abandon">收功</button>' +
       '<button class="btn ghost sm" data-pact="close">关闭</button>' +
     '</div>';
@@ -1025,6 +1130,29 @@ function viewSettings(){
     }).join('') : '<div class="small dim">还没有备份，随便完成一条功课就会自动留档</div>') +
     '<hr>' +
     '<button class="btn sm danger block" data-act="reset">清空全部存档</button>' +
+  '</div>';
+
+  var cc = cloudCfg();
+  html += '<div class="card"><div class="small muted" style="margin-bottom:10px">云存档（GitHub 私有仓库）</div>' +
+    '<label class="fld"><span>GitHub Token（只存在这台设备上，不会写进导出文件）</span>' +
+      '<input id="cloudToken" type="password" placeholder="ghp_..." value="' + esc(cc.token||'') + '"></label>' +
+    '<label class="fld"><span>仓库（会自动创建为私有仓库）</span>' +
+      '<input id="cloudRepo" placeholder="bian255/xiuxian-data" value="' + esc(cc.repo||'bian255/xiuxian-data') + '"></label>' +
+    '<label class="row small" style="gap:8px;margin-bottom:12px">' +
+      '<input type="checkbox" id="cloudAuto" ' + (cc.auto?'checked':'') + ' style="width:auto">' +
+      '自动上传（改动后约 20 秒静默同步）</label>' +
+    '<div class="row" style="gap:8px">' +
+      '<button class="btn sm grow" data-act="cloudPush">上传到云端</button>' +
+      '<button class="btn sm grow ghost" data-act="cloudPull">从云端恢复</button>' +
+    '</div>' +
+    '<div class="small dim" style="margin-top:8px">' +
+      (cc.lastAt
+        ? ((cc.lastOk === false ? '上次失败：' : '上次同步：') + (function(){ var d=new Date(cc.lastAt);
+            return d.getFullYear()+'/'+pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); })() +
+            (cc.lastOk === false && cc.lastErr ? '（' + esc(cc.lastErr) + '）' : ''))
+        : '还没同步过。Token 需要勾选 repo 权限（classic）或给仓库 Contents 读写（fine-grained）。') +
+    '</div>' +
+    '<div class="small dim" style="margin-top:6px">换手机时：新设备填同一个 Token → 点「从云端恢复」即可接着用。</div>' +
   '</div>';
 
   var totalMin = 0, totalN = 0;
@@ -1438,6 +1566,8 @@ function onMainClick(e){
       save(); render(); break;
     }
     case 'export': exportJson(); break;
+    case 'cloudPush': cloudPush(false); break;
+    case 'cloudPull': cloudPull(); break;
     case 'preset': applyPreset(t.getAttribute('data-k')); break;
     case 'import': importJson(); break;
     case 'reset':
@@ -1482,6 +1612,18 @@ function onMainChange(e){
   if(t.id === 'mulHard'){ state.cfg.hard = Math.max(0, +t.value || 2.5); save(); render(); }
   if(t.id === 'goalH'){ state.cfg.goal = Math.max(60, Math.round((+t.value || 12) * 60)); save(); render(); }
   if(t.id === 'saveTpl'){ }
+  if(t.id === 'cloudToken' || t.id === 'cloudRepo'){
+    var c1 = cloudCfg();
+    if(t.id === 'cloudToken') c1.token = t.value.trim(); else c1.repo = t.value.trim();
+    setCloudCfg(c1);
+    toast('已保存');
+  }
+  if(t.id === 'cloudAuto'){
+    var c2 = cloudCfg();
+    c2.auto = !!t.checked;
+    setCloudCfg(c2);
+    toast(t.checked ? '已开启自动上传' : '已关闭自动上传');
+  }
 }
 
 /* sheet 内部点击 */
@@ -1514,6 +1656,8 @@ function onSheetClick(e){
 
 /* 番茄钟点击 */
 function onPomoClick(e){
+  var mode = e.target.closest('[data-pmode]');
+  if(mode && ui.pomo){ pomoSetMode(mode.getAttribute('data-pmode')); return; }
   var sec = e.target.closest('[data-psec]');
   if(sec && ui.pomo){ pomoReset(+sec.getAttribute('data-psec')); return; }
   var sub = e.target.closest('[data-psub]');
@@ -1525,6 +1669,113 @@ function onPomoClick(e){
   if(act==='pause') pomoPause();
   if(act==='abandon') abandonPomo();
   if(act==='close') closePomo();
+}
+
+/* ---------- 云存档：存到自己的 GitHub 私有仓库 ---------- */
+var CLOUD_KEY = 'xiuxian.cloud.v1';
+function cloudCfg(){
+  try{ return JSON.parse(localStorage.getItem(CLOUD_KEY) || '{}') || {}; }
+  catch(e){ return {}; }
+}
+function setCloudCfg(o){
+  try{ localStorage.setItem(CLOUD_KEY, JSON.stringify(o)); }catch(e){}
+}
+function b64enc(str){
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function b64dec(b64){
+  return decodeURIComponent(escape(atob(String(b64).replace(/\s/g,''))));
+}
+function ghHeaders(token){
+  return {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+}
+function cloudRepoInfo(){
+  var c = cloudCfg();
+  var repo = (c.repo || 'bian255/xiuxian-data').trim();
+  var parts = repo.split('/');
+  return { full: repo, owner: parts[0] || '', name: parts[1] || '' };
+}
+/* 确保私有仓库存在；返回 Promise */
+function ensureCloudRepo(token){
+  var info = cloudRepoInfo();
+  return fetch('https://api.github.com/repos/' + info.full, {headers: ghHeaders(token)})
+    .then(function(r){
+      if(r.status === 200) return true;
+      if(r.status === 404){
+        return fetch('https://api.github.com/user/repos', {
+          method:'POST', headers: ghHeaders(token),
+          body: JSON.stringify({ name: info.name, private:true, auto_init:true,
+            description:'问道 · 考研修行录 云存档' })
+        }).then(function(r2){
+          if(r2.ok) return true;
+          return r2.json().then(function(j){ throw new Error(j.message || ('建仓失败 ' + r2.status)); });
+        });
+      }
+      return r.json().then(function(j){ throw new Error(j.message || ('HTTP ' + r.status)); });
+    });
+}
+function cloudPush(silent){
+  var c = cloudCfg();
+  if(!c.token){ if(!silent) toast('先填 GitHub Token'); return Promise.resolve(false); }
+  var info = cloudRepoInfo();
+  var body = JSON.stringify({ v:1, savedAt: Date.now(), app:'wenda' }, null, 0);
+  var payload = JSON.stringify({ v:1, savedAt: Date.now(), state: state });
+  return ensureCloudRepo(c.token).then(function(){
+    var url = 'https://api.github.com/repos/' + info.full + '/contents/save.json';
+    return fetch(url, {headers: ghHeaders(c.token)}).then(function(r){
+      return r.status === 200 ? r.json() : null;
+    });
+  }).then(function(existing){
+    var data = { message: '云存档 ' + todayStr(), content: b64enc(payload) };
+    if(existing && existing.sha) data.sha = existing.sha;
+    return fetch('https://api.github.com/repos/' + info.full + '/contents/save.json', {
+      method:'PUT', headers: ghHeaders(c.token), body: JSON.stringify(data)
+    });
+  }).then(function(r){
+    if(!r.ok) return r.json().then(function(j){ throw new Error(j.message || ('上传失败 ' + r.status)); });
+    c.lastAt = Date.now(); c.lastOk = true; setCloudCfg(c);
+    if(!silent) toast('已上传到云端');
+    render();
+    return true;
+  }).catch(function(err){
+    c.lastOk = false; c.lastErr = err.message; setCloudCfg(c);
+    if(!silent) toast('云存档失败：' + err.message);
+    if(!silent) render();
+    return false;
+  });
+}
+function cloudPull(){
+  var c = cloudCfg();
+  if(!c.token){ toast('先填 GitHub Token'); return; }
+  var info = cloudRepoInfo();
+  fetch('https://api.github.com/repos/' + info.full + '/contents/save.json', {headers: ghHeaders(c.token)})
+    .then(function(r){
+      if(!r.ok) return r.json().then(function(j){ throw new Error(j.message || ('HTTP ' + r.status)); });
+      return r.json();
+    })
+    .then(function(j){
+      var obj = JSON.parse(b64dec(j.content));
+      if(!obj || !obj.state || !Array.isArray(obj.state.realms)) throw new Error('云端存档格式不对');
+      var when = new Date(obj.savedAt || Date.now());
+      var t = when.getFullYear() + '/' + pad(when.getMonth()+1) + '/' + pad(when.getDate()) +
+        ' ' + pad(when.getHours()) + ':' + pad(when.getMinutes());
+      if(!confirm('用云端存档覆盖当前进度？\n云端时间：' + t)) return;
+      snapshot(true);
+      state = migrate(obj.state);
+      save(); render();
+      toast('已从云端恢复');
+    })
+    .catch(function(err){ toast('恢复失败：' + err.message); });
+}
+var cloudTimer = null;
+function scheduleCloudPush(){
+  if(!cloudCfg().auto || !cloudCfg().token) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(function(){ cloudPush(true); }, 20000);
 }
 
 /* ---------- 导入导出 ---------- */

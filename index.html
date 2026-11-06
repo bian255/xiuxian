@@ -1781,6 +1781,16 @@ function scheduleCloudPush(){
 /* ---------- 导入导出 ---------- */
 function exportJson(){
   var data = JSON.stringify(state, null, 2);
+  // 安卓 App 内：WebView 里 blob 下载不可靠，改走剪贴板
+  if(window.AndroidHost && window.AndroidHost.copyText){
+    try{
+      window.AndroidHost.copyText('问道存档', data);
+      state.meta.lastBackup = todayStr();
+      save(); render();
+      toast('存档已复制，粘贴到备忘录或发给自己保存');
+      return;
+    }catch(e){ /* 落到下面的浏览器方案 */ }
+  }
   var blob = new Blob([data], {type:'application/json'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1792,6 +1802,21 @@ function exportJson(){
   toast('已导出存档');
 }
 function importJson(){
+  // 安卓 App 内：从剪贴板读取存档文本
+  if(window.AndroidHost && window.AndroidHost.readText){
+    var txt = '';
+    try{ txt = window.AndroidHost.readText() || ''; }catch(e){ txt = ''; }
+    if(!txt.trim()){ toast('剪贴板里没有存档，先复制一段 JSON 再来'); return; }
+    try{
+      var obj = JSON.parse(txt);
+      if(!obj || !Array.isArray(obj.realms) || !obj.realms.length) throw new Error('不是有效的问道存档');
+      if(!confirm('导入会覆盖当前进度，确定？')) return;
+      snapshot(true);
+      state = migrate(obj);
+      save(); render(); toast('导入成功');
+    }catch(err){ toast('导入失败：' + err.message); }
+    return;
+  }
   var inp = document.createElement('input');
   inp.type = 'file'; inp.accept = 'application/json,.json';
   inp.onchange = function(){

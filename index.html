@@ -262,11 +262,12 @@ function freshState(){
     ],
     tasks: [],
     tpl: [],
+    packs: [],
     log: [],
     streak: { n: 0, last: '' },
     pills: 0,
     exam: { name:'考研初试', date:'' },
-    cfg: { base:70, growth:0.12, curve:1.12, per:10, easy:1, normal:1.5, hard:2.5, backupDays:7, pillXp:40 },
+    cfg: { base:70, growth:0.12, curve:1.12, per:10, easy:1, normal:1.5, hard:2.5, goal:720, backupDays:3, pillXp:40 },
     stats: {},
     meta: { createdAt: Date.now(), lastBackup: '', lastOpen: '' }
   };
@@ -302,6 +303,24 @@ function migrate(s){
 function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(state)); }
   catch(e){ toast('存档写入失败：' + e.message); }
+  snapshot();
+}
+
+/* ---------- 自动备份槽：每天留一档，最多 7 档 ---------- */
+var BACKUP_KEY = 'xiuxian.backups.v1';
+function snapshots(){
+  try{ return JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]') || []; }
+  catch(e){ return []; }
+}
+function snapshot(force){
+  try{
+    var d = todayStr();
+    var list = snapshots();
+    if(!force && list.length && list[0].d === d) return;
+    list.unshift({ d: d, at: Date.now(), s: JSON.parse(JSON.stringify(state)) });
+    while(list.length > 7) list.pop();
+    localStorage.setItem(BACKUP_KEY, JSON.stringify(list));
+  }catch(e){}
 }
 
 /* ---------- 等级 / 经验 ---------- */
@@ -837,10 +856,26 @@ function viewTasks(){
         '已完成 ' + plan.doneN + '/' + plan.n + ' 项' +
         (plan.doneXp ? ' · 已入账 +' + plan.doneXp : '') +
         (plan.sm > 1 ? ' · 含连击 ×' + plan.sm.toFixed(2) : '') +
-        (plan.min < 540 ? ' · 距 9 小时还差 ' + (540 - plan.min) + ' 分（约 +' +
-            Math.round(xpFor(540 - plan.min, 'normal') * plan.sm) + '）' : '') +
+        (plan.min < state.cfg.goal ? ' · 距 ' + (state.cfg.goal/60) + ' 小时还差 ' + (state.cfg.goal - plan.min) + ' 分（约 +' +
+            Math.round(xpFor(state.cfg.goal - plan.min, 'normal') * plan.sm) + '）' : '') +
       '</div>' +
     '</div>';
+  }
+
+  html += '<div class="row between" style="margin:2px 0 8px">' +
+    '<span class="small muted">每日套餐' + (state.packs.length ? '' : '（空）') + '</span>' +
+    '<button class="btn sm ghost" data-act="savePack" style="padding:3px 9px">＋ 存套餐</button>' +
+  '</div>';
+  if(state.packs.length){
+    html += '<div class="chips" style="margin-bottom:14px">' +
+      state.packs.map(function(p, i){
+        return '<span class="chip" data-act="usePack" data-i="' + i + '">' +
+          esc(p.name) + ' <span class="dim">' + p.items.length + ' 项</span>' +
+          '<i data-act="delPack" data-i="' + i + '" style="margin-left:7px;font-style:normal;color:#7d8f86;padding:0 2px">✕</i>' +
+        '</span>';
+      }).join('') + '</div>';
+  }else{
+    html += '<div class="small dim" style="margin-bottom:14px">把今天这套功课存成套餐，以后一键铺满。</div>';
   }
 
   html += '<div class="row between" style="margin:2px 0 8px">' +
@@ -955,8 +990,12 @@ function viewSettings(){
       numFld('mulNormal', '普通系数', state.cfg.normal) +
       numFld('mulHard', '困难系数', state.cfg.hard) +
     '</div>' +
+    '<div class="row" style="gap:10px">' +
+      numFld('goalH', '每日目标（小时）', state.cfg.goal/60) +
+    '</div>' +
     '<div class="small dim" style="margin-top:8px">修为 = 分钟 ÷ 每分钟折算 × 难度系数，再乘连击加成。' +
-      '每层所需 = 基础修为 × 倍率<sup>已过的层数</sup>，倍率越大后期越难。改完即时生效。</div>' +
+      '每层所需 = 基础修为 × 倍率<sup>已过的层数</sup>，倍率越大后期越难。改完即时生效。' +
+      '每日目标用于「今日预计」的还差多少与记录页柱状图的满格。</div>' +
     '<div class="small muted" style="margin:14px 0 8px">一键预设</div>' +
     '<div class="row" style="gap:8px">' +
       '<button class="btn sm grow" data-act="preset" data-k="sprint45">45 天冲刺</button>' +
@@ -973,6 +1012,17 @@ function viewSettings(){
     '<div class="small dim" style="margin-top:8px">' +
       (state.meta.lastBackup ? '上次导出：' + state.meta.lastBackup : '尚未导出') +
     '</div>' +
+    '<div class="small muted" style="margin:14px 0 8px">自动备份（每天一档，最多 7 档）</div>' +
+    '<button class="btn sm ghost block" data-act="snapNow" style="margin-bottom:10px">立即备份当前进度</button>' +
+    (snapshots().length ? snapshots().map(function(b, i){
+      var dt = new Date(b.at);
+      var n = (b.s.tasks || []).length;
+      return '<div class="row between small" style="padding:7px 0;border-bottom:1px solid var(--line)">' +
+        '<span>' + b.d + ' ' + pad(dt.getHours()) + ':' + pad(dt.getMinutes()) +
+          ' <span class="dim">· ' + n + ' 条功课</span></span>' +
+        '<button class="btn sm ghost" data-act="restore" data-i="' + i + '" style="padding:3px 9px">恢复</button>' +
+      '</div>';
+    }).join('') : '<div class="small dim">还没有备份，随便完成一条功课就会自动留档</div>') +
     '<hr>' +
     '<button class="btn sm danger block" data-act="reset">清空全部存档</button>' +
   '</div>';
@@ -1052,17 +1102,52 @@ function viewHistory(){
   var arr = [];
   for(var i=13;i>=0;i--) arr.push(shiftDay(todayStr(), -i));
   html += '<div class="card"><div class="row between" style="margin-bottom:10px">' +
-    '<span class="small muted">近 14 天</span><span class="small dim">满格 = 12 小时</span></div>' +
+    '<span class="small muted">近 14 天</span><span class="small dim">满格 = ' + (state.cfg.goal/60) + ' 小时</span></div>' +
     '<div class="hbars">' + arr.map(function(d){
       var m = 0;
       doneTasksOf(d).forEach(function(x){ m += x.doneMinutes||0; });
-      var h = m ? Math.max(4, Math.round(m/720*66)) : 3;
+      var h = m ? Math.max(4, Math.round(m/state.cfg.goal*66)) : 3;
       return '<div class="hbar' + (m?'':' zero') + '" data-act="openDay" data-d="' + d + '">' +
         '<i style="height:' + h + 'px"></i><span>' + d.slice(8) + '</span></div>';
     }).join('') + '</div></div>';
 
-  html += '<div class="small muted" style="margin:16px 0 8px">逐日明细</div>';
-  html += dates.slice(0,90).map(function(d){
+  // 各科投入（近 14 天）
+  var bySub = {}, totalAct = 0;
+  arr.forEach(function(d){
+    doneTasksOf(d).forEach(function(x){
+      var k = x.subject || '其他';
+      var o = bySub[k] || (bySub[k] = { act:0, plan:0, n:0 });
+      o.act += x.doneMinutes || 0; o.plan += x.minutes || 0; o.n++;
+    });
+  });
+  var subKeys = Object.keys(bySub);
+  subKeys.forEach(function(k){ totalAct += bySub[k].act; });
+  if(subKeys.length){
+    subKeys.sort(function(a,b){ return bySub[b].act - bySub[a].act; });
+    html += '<div class="card"><div class="small muted" style="margin-bottom:10px">各科投入 · 近 14 天</div>';
+    subKeys.forEach(function(k){
+      var o = bySub[k], pct = totalAct ? Math.round(o.act/totalAct*100) : 0;
+      var dev = Math.round(o.act - o.plan);
+      html += '<div style="margin-bottom:11px">' +
+        '<div class="row between small"><span>' + esc(k) + ' <span class="dim">' + o.n + ' 项</span></span>' +
+          '<span class="dim">' + fmtHours(o.act) + ' · ' + pct + '% · ' +
+            (dev >= 0 ? '+' : '') + dev + ' vs 计划</span></div>' +
+        '<div style="height:6px;background:#16221c;border-radius:4px;margin-top:5px;overflow:hidden">' +
+          '<i style="display:block;height:100%;width:' + pct + '%;background:linear-gradient(90deg,#3f7a5d,#7fd3a8)"></i></div>' +
+      '</div>';
+    });
+    var seenSub = {};
+    for(var w=0; w<7; w++){
+      doneTasksOf(shiftDay(todayStr(), -w)).forEach(function(x){ seenSub[x.subject] = 1; });
+    }
+    var miss = SUBJECTS.filter(function(s){ return !seenSub[s]; });
+    if(miss.length){
+      html += '<div class="small" style="color:#d9a05b;margin-top:4px">近 7 天没动：' + miss.join('、') + '</div>';
+    }
+    html += '</div>';
+  }
+
+  html += '<div class="small muted" style="margin:16px 0 8px">逐日明细</div>';  html += dates.slice(0,90).map(function(d){
     var list = doneTasksOf(d), m = 0, xp = 0;
     list.forEach(function(x){ m += x.doneMinutes||0; xp += x.xp||0; });
     var open = ui.openDay === d;
@@ -1154,6 +1239,19 @@ function sheetAddTask(pre){
     });
   });
 }
+function sheetSavePack(){
+  var n = todayTasks().length;
+  openSheet('<h3>存为套餐</h3>' +
+    '<label class="fld"><span>套餐名</span><input id="packName" placeholder="例：工作日满档" value="今日套餐"></label>' +
+    '<div class="small dim" style="margin-bottom:12px">把今天的 ' + n + ' 项功课存起来，以后一键铺满一天。</div>' +
+    '<div class="row" style="gap:8px">' +
+      '<button class="btn ghost grow" data-act="closeSheet">取消</button>' +
+      '<button class="btn primary grow" data-act="doSavePack">保存</button>' +
+    '</div>');
+  var el = document.getElementById('packName');
+  if(el && el.focus) el.focus();
+}
+
 function previewXp(){
   var s = ui.sheet; if(!s) return;
   var el = document.getElementById('xpPreview');
@@ -1233,6 +1331,51 @@ function onMainClick(e){
       break;
     }
     case 'addTpl': sheetAddTask({ save:true }); break;
+    case 'savePack': sheetSavePack(); break;
+    case 'doSavePack': {
+      var pn = (document.getElementById('packName').value || '').trim() || '套餐';
+      var pitems = todayTasks().map(function(x){
+        return { subject:x.subject, title:x.title, minutes:x.minutes, diff:x.diff };
+      });
+      if(!pitems.length){ toast('今天还没有功课'); return; }
+      state.packs.push({ id: uid(), name: pn, items: pitems });
+      save(); closeSheet(); render(); toast('已存套餐「' + pn + '」');
+      break;
+    }
+    case 'usePack': {
+      var pi = +t.getAttribute('data-i');
+      var pk = state.packs[pi];
+      if(!pk) break;
+      var td = todayStr(), added = 0;
+      pk.items.forEach(function(it){
+        var dup = state.tasks.some(function(x){ return x.date===td && x.subject===it.subject && x.title===it.title; });
+        if(!dup){ addTask(it); added++; }
+      });
+      render();
+      toast(added ? ('已铺 ' + added + ' 项') : '今天已经有这些了');
+      break;
+    }
+    case 'delPack': {
+      var pdi = +t.getAttribute('data-i');
+      var dpk = state.packs[pdi];
+      if(!dpk) break;
+      if(confirm('删掉套餐「' + dpk.name + '」？')) {
+        state.packs.splice(pdi, 1);
+        save(); render(); toast('已删除');
+      }
+      break;
+    }
+    case 'snapNow': snapshot(true); render(); toast('已备份'); break;
+    case 'restore': {
+      var ri = +t.getAttribute('data-i');
+      var rs = snapshots()[ri];
+      if(!rs) break;
+      if(confirm('恢复到 ' + rs.d + ' 的备份？当前进度会被覆盖。')) {
+        state = migrate(JSON.parse(JSON.stringify(rs.s)));
+        save(); render(); toast('已恢复');
+      }
+      break;
+    }
     case 'delTpl': {
       var di = +t.getAttribute('data-i');
       var dt = state.tpl[di];
@@ -1300,6 +1443,7 @@ function onMainClick(e){
     case 'reset':
       if(confirm('清空全部存档？此操作不可撤销，建议先导出。')){
         if(confirm('真的清空？修为、功课、境界设置都会重置。')){
+          snapshot(true);        // 清空前先留一档，手滑也能救回
           state = freshState(); save(); ui.tab='home'; render(); toast('已重置');
         }
       }
@@ -1336,6 +1480,7 @@ function onMainChange(e){
   if(t.id === 'mulEasy'){ state.cfg.easy = Math.max(0, +t.value || 1); save(); render(); }
   if(t.id === 'mulNormal'){ state.cfg.normal = Math.max(0, +t.value || 1.5); save(); render(); }
   if(t.id === 'mulHard'){ state.cfg.hard = Math.max(0, +t.value || 2.5); save(); render(); }
+  if(t.id === 'goalH'){ state.cfg.goal = Math.max(60, Math.round((+t.value || 12) * 60)); save(); render(); }
   if(t.id === 'saveTpl'){ }
 }
 
@@ -1407,6 +1552,7 @@ function importJson(){
         var obj = JSON.parse(String(rd.result));
         if(!obj || !Array.isArray(obj.realms) || !obj.realms.length) throw new Error('不是有效的问道存档');
         if(!confirm('导入会覆盖当前进度，确定？')) return;
+        snapshot(true);          // 覆盖前先留一档，导错了还能救回
         state = migrate(obj);
         save(); render(); toast('导入成功');
       }catch(err){ toast('导入失败：' + err.message); }
